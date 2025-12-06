@@ -1,0 +1,63 @@
+{
+	"manifest_version": 3,
+	"name": "Advanced Filament Swap for Moonraker",
+	"version": "0.1.0",
+	"description": "Guided filament change for Moonraker-based printers.",
+	"action": {
+		"default_popup": "src/popup/popup.html",
+		"default_icon": {
+			"16": "icons/icon-16.png",
+			"32": "icons/icon-32.png",
+			"48": "icons/icon-48.png",
+			"128": "icons/icon-128.png"
+		}
+	},
+	"permissions": ["storage"],
+	"host_permissions": ["*://*/*"],
+	"content_scripts": [
+		{
+			"matches": ["*://*/*"],
+			"css": ["src/content/styles/content.css"],
+			"js": [
+				"src/utils/utils.js",
+				"src/utils/user-settings.js",
+				"src/lang/en.js",
+				"src/lang/es.js",
+				"src/lang/de.js",
+				"src/lang/fr.js",
+				"src/lang/zh-CN.js",
+				"src/utils/i18n.js",
+				"src/utils/moonraker-utils.js",
+				"src/utils/config-parser.js",
+				"src/content/config-definitions.js",
+				"src/content/afs-modal.js",
+				"src/content/settings-modal.js",
+				"src/utils/m300-player.js",
+				"src/utils/browser-notifications.js",
+				"src/content/main.js"
+			],
+			"run_at": "document_end"
+		}
+	],
+	"web_accessible_resources": [
+		{
+			"resources": [
+				"assets/adv_filament_swap.cfg",
+				"assets/logo.png",
+				"assets/icon.png",
+				"assets/coffee.png",
+				"src/content/styles/afs-modal.css",
+				"src/content/styles/settings-modal.css"
+			],
+			"matches": ["*://*/*"]
+		}
+	],
+	"icons": {
+		"16": "icons/icon-16.png",
+		"32": "icons/icon-32.png",
+		"48": "icons/icon-48.png",
+		"128": "icons/icon-128.png",
+		"256": "icons/icon-256.png",
+		"512": "icons/icon-512.png"
+	}
+}
