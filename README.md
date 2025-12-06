@@ -6,6 +6,10 @@
 
 Whether you're dealing with a mid-print filament change (M600), runouts, or just swapping colors between prints, AFS takes the guesswork out of the process with a visual timeline, automated macros, and smart safeguards.
 
+## Demos
+
+[![Demo 1](https://img.youtube.com/vi/osOXfzRxjKA/0.jpg)](https://youtu.be/osOXfzRxjKA) [![Demo 2](https://img.youtube.com/vi/yw7z2yx4DHE/0.jpg)](https://youtu.be/yw7z2yx4DHE)
+
 ## ✨ Features
 
 -   **🖥️ Seamless Integration**: Works on top of any Moonraker-based web interface. The extension injects a non-intrusive control button directly into your dashboard.
