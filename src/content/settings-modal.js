@@ -2690,7 +2690,7 @@ class SettingsModal {
 				window.I18n.t('settings.about.discord'),
 				'Join the Community',
 				iconDiscord,
-				'https://discord.gg/klipper',
+				'https://discord.gg/e3eXGTJbjx',
 				false,
 				true
 			)
