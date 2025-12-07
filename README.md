@@ -41,7 +41,7 @@ This extension is designed to work with standard Moonraker and Klipper installat
 
 1.  **Download the Source**: Clone this repository or download the ZIP and extract it to a folder on your computer.
     ```bash
-    git clone https://github.com/92jackson/mainsail-advanced-filament-swap.git
+    git clone https://github.com/92jackson/Advanced-Filament-Swap.git
     ```
 2.  **Open Extensions Management**:
     -   In Chrome, go to `chrome://extensions`.
