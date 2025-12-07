@@ -62,7 +62,7 @@ This extension is designed to work with standard Moonraker and Klipper installat
 Need help? Found a bug? Want to request a feature?
 
 -   **Discord**: Join the community on [Discord](https://discord.gg/e3eXGTJbjx) for real-time support and discussions.
--   **GitHub Issues**: Report bugs or suggest enhancements on our [Issues Page](https://github.com/92jackson/mainsail-advanced-filament-swap/issues).
+-   **GitHub Issues**: Report bugs or suggest enhancements on our [Issues Page](https://github.com/92jackson/Advanced-Filament-Swap/issues).
 
 ---
 
