@@ -332,6 +332,7 @@ window.ConfigDefinitions = {
 				description:
 					'Insert new filament until it reaches the hotend. Use the Advance control to bleed or purge preset lengths.',
 				upcomingStages: ['Loaded', 'Complete'],
+				showTempControl: true,
 				macros: [
 					{
 						label: 'Finish',
@@ -347,6 +348,7 @@ window.ConfigDefinitions = {
 				description:
 					'Hotend heated and parked. You can pull the filament out manually or use Unload Filament. Then use Load Filament to advance the new filament.',
 				upcomingStages: ['Loaded', 'Complete'],
+				showTempControl: true,
 				macros: [
 					{
 						label: 'Finish',
@@ -362,6 +364,7 @@ window.ConfigDefinitions = {
 				description:
 					"Filament loaded! Use the Advance control to purge preset lengths until color is clean, or 'Finish' to resume.",
 				upcomingStages: ['Complete'],
+				showTempControl: true,
 				macros: [
 					{
 						label: 'Finish',

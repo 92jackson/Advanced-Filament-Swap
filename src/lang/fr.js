@@ -155,6 +155,8 @@ window.I18nTranslations.fr = {
 			purge_x: 'Purger {x}mm',
 			expand: 'Développer',
 			collapse: 'Réduire',
+			set_temp_x: 'Régler Temp {x}°C',
+			preset_temp_x: '{x}°C',
 		},
 		status: {
 			title: 'État & Installation',
@@ -508,6 +510,9 @@ window.I18nTranslations.fr = {
 			title: 'Paramètres Extension',
 			language: 'Langue',
 			language_desc: "Sélectionnez la langue de l'interface.",
+			tempPresets: 'Préréglages de Température (°C)',
+			tempPresets_desc:
+				'Liste séparée par des virgules utilisée par le contrôle de température du modal.',
 			useBrowserNotifications: 'Notifications Navigateur',
 			alarmOnM600: 'Alarme sur M600',
 			alarmOnRunout: 'Alarme sur Fin Filament',

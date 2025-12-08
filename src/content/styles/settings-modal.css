@@ -581,6 +581,18 @@ input:checked + .afs-slider:before {
 	text-align: center;
 }
 
+.afs-btn-with-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.afs-btn-with-icon svg {
+	width: 18px;
+	height: 18px;
+}
+
 .afs-btn-secondary {
 	background: #4f545c;
 	color: white;

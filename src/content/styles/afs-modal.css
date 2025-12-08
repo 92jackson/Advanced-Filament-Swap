@@ -134,6 +134,30 @@
 	flex-shrink: 0;
 }
 
+.afs-temp-ctl {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	position: relative;
+	background-color: #1e1e1e;
+	border: 1px solid #333;
+	color: #fff;
+	border-radius: 4px;
+}
+
+.afs-temp-input-small {
+	width: 64px;
+	padding: 6px 8px;
+	background-color: transparent;
+	border: 0px;
+	color: #fff;
+}
+
+.afs-temp-prefix {
+	color: #aaa;
+	font-size: 0.9rem;
+}
+
 /* Progress/Timeline */
 .afs-timeline {
 	display: flex;
@@ -462,6 +486,18 @@
 	background-color: #616161;
 }
 
+.afs-btn-with-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.afs-btn-with-icon svg {
+	width: 16px;
+	height: 16px;
+}
+
 .afs-btn:disabled {
 	background-color: #555 !important;
 	color: #888 !important;
@@ -483,6 +519,11 @@
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 	background-color: #424242;
+	height: 100%;
+}
+
+.afs-modal-overlay.minimized .afs-temp-ctl {
+	display: none;
 }
 
 .afs-split-btn-caret:hover {
@@ -503,6 +544,13 @@
 	overflow-y: auto;
 	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 	z-index: 10001;
+}
+
+.afs-dropdown-below {
+	position: absolute;
+	top: calc(100% + 4px);
+	bottom: auto;
+	right: 0;
 }
 
 .afs-dropdown.open {

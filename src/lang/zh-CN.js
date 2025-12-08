@@ -152,6 +152,8 @@ window.I18nTranslations['zh-CN'] = {
 			purge_x: '排出 {x}mm',
 			expand: '展开',
 			collapse: '收起',
+			set_temp_x: '设置温度 {x}°C',
+			preset_temp_x: '{x}°C',
 		},
 		status: {
 			title: '状态与安装',
@@ -479,6 +481,8 @@ window.I18nTranslations['zh-CN'] = {
 			title: '扩展设置',
 			language: '语言',
 			language_desc: '选择扩展界面的语言。',
+			tempPresets: '温度预设 (°C)',
+			tempPresets_desc: '以逗号分隔的列表，用于模态温度控制。',
 			useBrowserNotifications: '浏览器通知',
 			alarmOnM600: 'M600 警报',
 			alarmOnRunout: '耗尽警报',

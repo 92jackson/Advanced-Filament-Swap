@@ -114,6 +114,11 @@ class ConfigParser {
 		return result;
 	}
 
+	static extractVersion(text) {
+		const m = (text || '').match(/Cfg\s+version\s+([0-9]+(?:\.[0-9]+){1,2})/i);
+		return m ? m[1] : '';
+	}
+
 	/**
 	 * Rebuilds a config block string from data array
 	 * @param {string} blockName The variable name of the block

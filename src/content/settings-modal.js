@@ -176,6 +176,108 @@ class SettingsModal {
 		if (closeBtn) closeBtn.title = window.I18n.t('settings.common.close');
 	}
 
+	_createIcon(name) {
+		const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		svg.setAttribute('width', '20');
+		svg.setAttribute('height', '20');
+		svg.setAttribute('viewBox', '0 0 24 24');
+		svg.setAttribute('fill', 'none');
+		svg.setAttribute('stroke', 'currentColor');
+		svg.setAttribute('stroke-width', '2');
+		svg.setAttribute('stroke-linecap', 'round');
+		svg.setAttribute('stroke-linejoin', 'round');
+		if (name === 'install') {
+			const p1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			p1.setAttribute('d', 'M12 5v10');
+			svg.appendChild(p1);
+			const p2 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+			p2.setAttribute('points', '8 11 12 15 16 11');
+			svg.appendChild(p2);
+			const p3 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			p3.setAttribute('d', 'M5 19h14');
+			svg.appendChild(p3);
+		} else if (name === 'upgrade') {
+			const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+			c.setAttribute('cx', '12');
+			c.setAttribute('cy', '12');
+			c.setAttribute('r', '9');
+			svg.appendChild(c);
+			const p1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			p1.setAttribute('d', 'M12 16V8');
+			svg.appendChild(p1);
+			const p2 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+			p2.setAttribute('points', '8 12 12 8 16 12');
+			svg.appendChild(p2);
+		} else if (name === 'advanced') {
+			const p1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+			p1.setAttribute('x1', '4');
+			p1.setAttribute('y1', '6');
+			p1.setAttribute('x2', '20');
+			p1.setAttribute('y2', '6');
+			svg.appendChild(p1);
+			const p2 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+			p2.setAttribute('cx', '8');
+			p2.setAttribute('cy', '6');
+			p2.setAttribute('r', '2');
+			svg.appendChild(p2);
+			const p3 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+			p3.setAttribute('x1', '4');
+			p3.setAttribute('y1', '12');
+			p3.setAttribute('x2', '20');
+			p3.setAttribute('y2', '12');
+			svg.appendChild(p3);
+			const p4 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+			p4.setAttribute('cx', '16');
+			p4.setAttribute('cy', '12');
+			p4.setAttribute('r', '2');
+			svg.appendChild(p4);
+			const p5 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+			p5.setAttribute('x1', '4');
+			p5.setAttribute('y1', '18');
+			p5.setAttribute('x2', '20');
+			p5.setAttribute('y2', '18');
+			svg.appendChild(p5);
+			const p6 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+			p6.setAttribute('cx', '10');
+			p6.setAttribute('cy', '18');
+			p6.setAttribute('r', '2');
+			svg.appendChild(p6);
+		} else if (name === 'backup') {
+			const p1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			p1.setAttribute('d', 'M12 5v10');
+			svg.appendChild(p1);
+			const p2 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+			p2.setAttribute('points', '8 11 12 15 16 11');
+			svg.appendChild(p2);
+			const p3 = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+			p3.setAttribute('x', '5');
+			p3.setAttribute('y', '17');
+			p3.setAttribute('width', '14');
+			p3.setAttribute('height', '2');
+			svg.appendChild(p3);
+		} else if (name === 'uninstall') {
+			const p1 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+			p1.setAttribute('points', '3 6 5 6 21 6');
+			svg.appendChild(p1);
+			const p2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			p2.setAttribute('d', 'M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6');
+			svg.appendChild(p2);
+			const p3 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+			p3.setAttribute('x1', '10');
+			p3.setAttribute('y1', '11');
+			p3.setAttribute('x2', '10');
+			p3.setAttribute('y2', '17');
+			svg.appendChild(p3);
+			const p4 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+			p4.setAttribute('x1', '14');
+			p4.setAttribute('y1', '11');
+			p4.setAttribute('x2', '14');
+			p4.setAttribute('y2', '17');
+			svg.appendChild(p4);
+		}
+		return svg;
+	}
+
 	_switchTab(tab) {
 		// Check for dirty config if leaving 'config' tab
 		if (this.activeTab === 'config' && tab !== 'config' && this.configDirty) {
@@ -278,6 +380,19 @@ class SettingsModal {
 			// while preserving the settings we just parsed.
 			this.fullConfigText = templateText;
 
+			const bundledCfgVersion =
+				window.ConfigParser && typeof window.ConfigParser.extractVersion === 'function'
+					? window.ConfigParser.extractVersion(templateText)
+					: '';
+			const installedCfgVersion =
+				window.ConfigParser && typeof window.ConfigParser.extractVersion === 'function'
+					? window.ConfigParser.extractVersion(snapshot.advConfigText || '')
+					: '';
+			const isOutdatedCfg =
+				!!installedCfgVersion &&
+				!!bundledCfgVersion &&
+				this._compareSemver(installedCfgVersion, bundledCfgVersion) < 0;
+
 			const isLegacyConfig = snapshot.isLegacyConfig;
 
 			this.state = {
@@ -288,6 +403,9 @@ class SettingsModal {
 				axisMaximums: axisMax,
 				macros: macros.sort(),
 				isLegacyConfig,
+				bundledCfgVersion,
+				installedCfgVersion,
+				isOutdatedCfg,
 			};
 
 			this.snapshot = snapshot;
@@ -302,6 +420,24 @@ class SettingsModal {
 			});
 			this.elements.scrollContainer.appendChild(errorDiv);
 		}
+	}
+
+	_compareSemver(a, b) {
+		const pa = String(a || '')
+			.trim()
+			.split('.')
+			.map((n) => parseInt(n, 10));
+		const pb = String(b || '')
+			.trim()
+			.split('.')
+			.map((n) => parseInt(n, 10));
+		for (let i = 0; i < 3; i++) {
+			const av = pa[i] || 0;
+			const bv = pb[i] || 0;
+			if (av < bv) return -1;
+			if (av > bv) return 1;
+		}
+		return 0;
 	}
 
 	_parseConfig(text, macros = []) {
@@ -610,12 +746,14 @@ class SettingsModal {
 				{
 					label: window.I18n.t('settings.common.refresh_page'),
 					primary: true,
+					icon: 'refresh',
 					callback: () => {
 						location.reload();
 					},
 				},
 				{
 					label: window.I18n.t('settings.common.close'),
+					icon: 'close',
 					callback: () => {
 						modal.close();
 					},
@@ -697,7 +835,15 @@ class SettingsModal {
 
 	_renderSummaryTab() {
 		const container = this.elements.scrollContainer;
-		const { isInstalled, configExists, conflicts, isLegacyConfig } = this.state;
+		const {
+			isInstalled,
+			configExists,
+			conflicts,
+			isLegacyConfig,
+			isOutdatedCfg,
+			installedCfgVersion,
+			bundledCfgVersion,
+		} = this.state;
 
 		const header = document.createElement('div');
 		header.className = 'afs-settings-header';
@@ -879,6 +1025,9 @@ class SettingsModal {
 				} else if (isLegacyConfig) {
 					footerText = window.I18n.t('settings.status.footer_afs_legacy');
 					footerLevel = 'warning';
+				} else if (isOutdatedCfg) {
+					footerText = `Update recommended: installed ${installedCfgVersion}, latest ${bundledCfgVersion}`;
+					footerLevel = 'warning';
 				}
 			} else if (type === 'include') {
 				if (!isIncluded) {
@@ -1023,10 +1172,16 @@ class SettingsModal {
 			description: isLegacyConfig
 				? window.I18n.t('settings.status.legacy_msg')
 				: hasAFS
-				? window.I18n.t('settings.status.installed_msg')
+				? isOutdatedCfg
+					? `Configuration is outdated (installed ${installedCfgVersion}, latest ${bundledCfgVersion}).`
+					: window.I18n.t('settings.status.installed_msg')
 				: window.I18n.t('settings.status.not_installed_msg'),
 			items: [],
 		};
+		if (hasAFS) {
+			afsDetails.items.push({ name: 'Installed cfg', value: installedCfgVersion || '-' });
+			afsDetails.items.push({ name: 'Bundled cfg', value: bundledCfgVersion || '-' });
+		}
 
 		const includeDetails = {
 			title: 'Configuration Include Status',
@@ -1067,8 +1222,13 @@ class SettingsModal {
 		let afsStatus = 'error';
 		let afsSub = window.I18n.t('settings.status.not_installed');
 		if (hasAFS) {
-			afsStatus = 'success';
-			afsSub = window.I18n.t('settings.status.installed');
+			if (isOutdatedCfg) {
+				afsStatus = 'warning';
+				afsSub = `Outdated (${installedCfgVersion} → ${bundledCfgVersion})`;
+			} else {
+				afsStatus = 'success';
+				afsSub = window.I18n.t('settings.status.installed');
+			}
 		} else if (isLegacyConfig) {
 			afsStatus = 'warning';
 			afsSub = window.I18n.t('settings.status.legacy');
@@ -1316,32 +1476,57 @@ class SettingsModal {
 
 		if (!isInstalled || !configExists || isLegacyConfig || runoutConflict) {
 			const btnInstall = document.createElement('button');
-			btnInstall.className = 'afs-btn-primary large';
-			btnInstall.textContent = window.I18n.t('settings.common.install_repair');
+			btnInstall.className = 'afs-btn-primary large afs-btn-with-icon';
 			btnInstall.title = window.I18n.t('settings.status.tip_install');
 			btnInstall.onclick = () => this._saveConfig(true);
+			btnInstall.appendChild(this._createIcon('install'));
+			btnInstall.appendChild(
+				document.createTextNode(window.I18n.t('settings.common.install_repair'))
+			);
 			actions.appendChild(btnInstall);
 		}
 
+		if (isOutdatedCfg && isInstalled && configExists && !isLegacyConfig && !runoutConflict) {
+			const btnUpgrade = document.createElement('button');
+			btnUpgrade.className = 'afs-btn-primary large afs-btn-with-icon';
+			const lbl = window.I18n.t('settings.common.upgrade_cfg');
+			const tip = window.I18n.t('settings.status.tip_upgrade');
+			btnUpgrade.title =
+				tip !== 'settings.status.tip_upgrade' ? tip : 'Upgrade to latest bundled cfg';
+			btnUpgrade.onclick = () => this._saveConfig(true);
+			btnUpgrade.appendChild(this._createIcon('upgrade'));
+			btnUpgrade.appendChild(
+				document.createTextNode(lbl !== 'settings.common.upgrade_cfg' ? lbl : 'Upgrade Cfg')
+			);
+			actions.appendChild(btnUpgrade);
+		}
+
 		const btnAdvanced = document.createElement('button');
-		btnAdvanced.className = 'afs-btn-secondary large';
-		btnAdvanced.textContent = window.I18n.t('settings.common.open_advanced');
+		btnAdvanced.className = 'afs-btn-secondary large afs-btn-with-icon';
 		btnAdvanced.title = window.I18n.t('settings.status.tip_advanced');
 		btnAdvanced.onclick = () => this._switchTab('config');
+		btnAdvanced.appendChild(this._createIcon('advanced'));
+		btnAdvanced.appendChild(
+			document.createTextNode(window.I18n.t('settings.common.open_advanced'))
+		);
 
 		actions.appendChild(btnAdvanced);
 
 		if (isInstalled && configExists) {
 			const btnBackup = document.createElement('button');
-			btnBackup.className = 'afs-btn-secondary large afs-mt-10';
-			btnBackup.textContent = window.I18n.t('settings.menu.backup');
+			btnBackup.className = 'afs-btn-secondary large afs-btn-with-icon afs-mt-10';
 			btnBackup.onclick = () => this._switchTab('backup');
+			btnBackup.appendChild(this._createIcon('backup'));
+			btnBackup.appendChild(document.createTextNode(window.I18n.t('settings.menu.backup')));
 			actions.appendChild(btnBackup);
 
 			const btnUninstall = document.createElement('button');
-			btnUninstall.className = 'afs-btn-danger large afs-mt-10';
-			btnUninstall.textContent = window.I18n.t('settings.common.uninstall');
+			btnUninstall.className = 'afs-btn-danger large afs-btn-with-icon afs-mt-10';
 			btnUninstall.onclick = () => this._uninstallConfig();
+			btnUninstall.appendChild(this._createIcon('uninstall'));
+			btnUninstall.appendChild(
+				document.createTextNode(window.I18n.t('settings.common.uninstall'))
+			);
 			actions.appendChild(btnUninstall);
 		}
 
@@ -2491,6 +2676,84 @@ class SettingsModal {
 
 		container.appendChild(langGroup);
 
+		const presetsGroup = document.createElement('div');
+		presetsGroup.className = 'afs-form-group afs-mb-20';
+		const presetsLabel = document.createElement('label');
+		presetsLabel.className = 'afs-label';
+		presetsLabel.textContent = window.I18n.t('settings.extension.tempPresets');
+		presetsGroup.appendChild(presetsLabel);
+		const presetsRow = document.createElement('div');
+		presetsRow.className = 'afs-input-row';
+		const presetsInput = document.createElement('input');
+		presetsInput.className = 'afs-input afs-input-flex';
+		const curPresets = Array.isArray(settings.tempPresets) ? settings.tempPresets : [];
+		presetsInput.placeholder = '[PLA:200], [ABS:240], [220]';
+		presetsInput.value = curPresets
+			.map((item) => {
+				if (item && typeof item === 'object') {
+					const n = parseInt(item.value, 10);
+					if (!Number.isFinite(n) || n <= 0) return '';
+					const lbl = item.label ? String(item.label) : String(n);
+					if (lbl !== String(n)) return `[${lbl}:${n}]`;
+					return `[${n}]`;
+				}
+				const n = parseInt(item, 10);
+				if (!Number.isFinite(n) || n <= 0) return '';
+				return `[${n}]`;
+			})
+			.filter((s) => s)
+			.join(', ');
+		const applyPresets = () => {
+			const raw = presetsInput.value || '';
+			const arr = raw
+				.split(',')
+				.map((s) => s.trim())
+				.filter((s) => s)
+				.map((s) => {
+					let t = s;
+					if (t.startsWith('[')) t = t.slice(1);
+					if (t.endsWith(']')) t = t.slice(0, -1);
+					t = t.trim();
+					const parts = t.split(':');
+					const label = parts.length > 1 ? parts[0].trim() : '';
+					const valueStr = parts.length > 1 ? parts[1].trim() : parts[0].trim();
+					const n = parseInt(valueStr, 10);
+					if (!Number.isFinite(n) || n <= 0) return null;
+					return { value: n, label: label || String(n) };
+				})
+				.filter((item) => item !== null);
+			window.UserSettings.set('tempPresets', arr).then(() => {
+				const cur = window.UserSettings.get('tempPresets') || [];
+				const formatted = cur
+					.map((item) => {
+						if (item && typeof item === 'object') {
+							const n = parseInt(item.value, 10);
+							if (!Number.isFinite(n) || n <= 0) return '';
+							const lbl = item.label ? String(item.label) : String(n);
+							if (lbl !== String(n)) return `[${lbl}:${n}]`;
+							return `[${n}]`;
+						}
+						const n = parseInt(item, 10);
+						if (!Number.isFinite(n) || n <= 0) return '';
+						return `[${n}]`;
+					})
+					.filter((s) => s)
+					.join(', ');
+				presetsInput.value = formatted;
+			});
+		};
+		presetsInput.addEventListener('change', applyPresets);
+		presetsInput.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter') applyPresets();
+		});
+		presetsRow.appendChild(presetsInput);
+		presetsGroup.appendChild(presetsRow);
+		const presetsDesc = document.createElement('div');
+		presetsDesc.className = 'afs-field-desc';
+		presetsDesc.textContent = window.I18n.t('settings.extension.tempPresets_desc');
+		presetsGroup.appendChild(presetsDesc);
+		container.appendChild(presetsGroup);
+
 		// Section: Alarms
 		const alarmHeader = document.createElement('h3');
 		alarmHeader.textContent = window.I18n.t('settings.extension.browserAlarms');
@@ -3097,7 +3360,7 @@ gcode:
 				});
 			}
 		}
-		if (forceInstall || !this.snapshot.hasAFSInclude) {
+		if (!this.snapshot.hasAFSInclude) {
 			installItems.push({
 				text: window.I18n.t('modal.items.add_include'),
 				file: 'printer.cfg',
@@ -3302,6 +3565,7 @@ gcode:
 		confirmStage.macros = [
 			{
 				label: window.I18n.t('settings.common.cancel'),
+				icon: 'close',
 				callback: () => {
 					modal.close();
 				},
@@ -3309,6 +3573,7 @@ gcode:
 			{
 				label: window.I18n.t('settings.common.install_repair'),
 				primary: true,
+				icon: 'install',
 				callback: async () => {
 					let blocked = false;
 					try {
@@ -3324,6 +3589,7 @@ gcode:
 							macros: [
 								{
 									label: window.I18n.t('settings.common.close'),
+									icon: 'close',
 									callback: () => modal.close(),
 								},
 							],

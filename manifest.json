@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Advanced Filament Swap for Moonraker",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"description": "Guided filament change for Moonraker-based printers.",
 	"action": {
 		"default_popup": "src/popup/popup.html",

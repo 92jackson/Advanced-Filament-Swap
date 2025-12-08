@@ -154,6 +154,8 @@ window.I18nTranslations.de = {
 			purge_x: 'Spüle {x}mm',
 			expand: 'Erweitern',
 			collapse: 'Einklappen',
+			set_temp_x: 'Temperatur {x}°C setzen',
+			preset_temp_x: '{x}°C',
 		},
 		status: {
 			title: 'Status & Installation',
@@ -508,6 +510,8 @@ window.I18nTranslations.de = {
 			title: 'Erweiterungs-Einstellungen',
 			language: 'Sprache',
 			language_desc: 'Wähle die Sprache für die Erweiterungsoberfläche.',
+			tempPresets: 'Temperatur-Presets (°C)',
+			tempPresets_desc: 'Kommagetrennte Liste für die Temperaturauswahl im Modal.',
 			useBrowserNotifications: 'Browser-Benachrichtigungen',
 			alarmOnM600: 'Alarm bei M600',
 			alarmOnRunout: 'Alarm bei Runout',

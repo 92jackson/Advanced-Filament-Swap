@@ -109,6 +109,7 @@ class FilamentSwapModal {
 
 		const controls = document.createElement('div');
 		controls.className = 'afs-header-controls';
+		this.elements.headerControls = controls;
 
 		const minBtn = document.createElement('button');
 		minBtn.className = 'afs-btn-icon';
@@ -189,6 +190,50 @@ class FilamentSwapModal {
 		this.elements.footer = document.createElement('div');
 		this.elements.footer.className = 'afs-modal-footer';
 		this.elements.modal.appendChild(this.elements.footer);
+	}
+
+	_createIcon(name) {
+		const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+		svg.setAttribute('width', '20');
+		svg.setAttribute('height', '20');
+		svg.setAttribute('viewBox', '0 0 24 24');
+		svg.setAttribute('fill', 'none');
+		svg.setAttribute('stroke', 'currentColor');
+		svg.setAttribute('stroke-width', '2');
+		svg.setAttribute('stroke-linecap', 'round');
+		svg.setAttribute('stroke-linejoin', 'round');
+		if (name === 'install') {
+			const p1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			p1.setAttribute('d', 'M12 5v10');
+			svg.appendChild(p1);
+			const p2 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+			p2.setAttribute('points', '8 11 12 15 16 11');
+			svg.appendChild(p2);
+			const p3 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			p3.setAttribute('d', 'M5 19h14');
+			svg.appendChild(p3);
+		} else if (name === 'close') {
+			const p1 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+			p1.setAttribute('x1', '6');
+			p1.setAttribute('y1', '6');
+			p1.setAttribute('x2', '18');
+			p1.setAttribute('y2', '18');
+			svg.appendChild(p1);
+			const p2 = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+			p2.setAttribute('x1', '6');
+			p2.setAttribute('y1', '18');
+			p2.setAttribute('x2', '18');
+			p2.setAttribute('y2', '6');
+			svg.appendChild(p2);
+		} else if (name === 'refresh') {
+			const p1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			p1.setAttribute('d', 'M20 11a8 8 0 1 0-3 6');
+			svg.appendChild(p1);
+			const p2 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+			p2.setAttribute('points', '20 7 20 11 16 11');
+			svg.appendChild(p2);
+		}
+		return svg;
 	}
 
 	_triggerShake() {
@@ -393,13 +438,110 @@ class FilamentSwapModal {
 			this.elements.overlay.addEventListener('click', (e) => {
 				if (!group.contains(e.target)) menu.classList.remove('open');
 			});
+
+			if (this.elements.tempControlWrap) {
+				this.elements.tempControlWrap.remove();
+				this.elements.tempControlWrap = null;
+			}
+			if (stage.showTempControl && this.elements.headerControls) {
+				const ctl = document.createElement('div');
+				ctl.className = 'afs-temp-ctl';
+
+				const inp = document.createElement('input');
+				inp.className = 'afs-input afs-temp-input-small';
+				inp.type = 'number';
+				inp.step = '5';
+				inp.min = '0';
+				const tgt =
+					window.printerTelemetry && window.printerTelemetry.extruder
+						? window.printerTelemetry.extruder.target
+						: null;
+				inp.placeholder = String(tgt || 200);
+				inp.value = '';
+				const commit = () => {
+					const val = parseInt(inp.value || inp.placeholder || '200', 10);
+					if (Number.isFinite(val) && val > 0) {
+						if (window.sendGcode) window.sendGcode(`AFS_SET_TARGET T=${val}`);
+						inp.placeholder = String(val);
+						inp.value = '';
+					}
+				};
+				inp.addEventListener('change', commit);
+				inp.addEventListener('keydown', (e) => {
+					if (e.key === 'Enter') commit();
+				});
+				const caret = document.createElement('button');
+				caret.className = 'afs-btn-icon afs-split-btn-caret';
+				caret.textContent = '\u25BE';
+				const menu2 = document.createElement('div');
+				menu2.className = 'afs-dropdown afs-dropdown-below';
+				const addPreset2 = (value, label) => {
+					const item = document.createElement('div');
+					item.className = 'afs-dropdown-item';
+					const txt =
+						label && label !== String(value)
+							? `${label} (${value}\u00B0C)`
+							: `${value}\u00B0C`;
+					item.textContent = txt;
+					item.onclick = () => {
+						inp.value = String(value);
+						commit();
+						menu2.classList.remove('open');
+					};
+					menu2.appendChild(item);
+				};
+				const presets = (window.UserSettings && window.UserSettings.get('tempPresets')) || [
+					{ value: 180, label: '180' },
+					{ value: 200, label: '200' },
+					{ value: 220, label: '220' },
+					{ value: 240, label: '240' },
+					{ value: 260, label: '260' },
+				];
+				(presets || []).forEach((item) => {
+					if (item && typeof item === 'object') {
+						const n = parseInt(item.value, 10);
+						if (Number.isFinite(n) && n > 0) addPreset2(n, item.label || String(n));
+					} else {
+						const n = parseInt(item, 10);
+						if (Number.isFinite(n) && n > 0) addPreset2(n, String(n));
+					}
+				});
+				caret.onclick = (ev) => {
+					ev.stopPropagation();
+					menu2.classList.toggle('open');
+				};
+
+				const prefix = document.createElement('span');
+				prefix.className = 'afs-temp-prefix';
+				prefix.textContent = '\u00B0C';
+
+				ctl.appendChild(inp);
+				ctl.appendChild(prefix);
+				ctl.appendChild(caret);
+				ctl.appendChild(menu2);
+				const target =
+					this.elements.minBtn && this.elements.headerControls
+						? this.elements.minBtn
+						: null;
+				if (target && this.elements.headerControls.contains(target)) {
+					this.elements.headerControls.insertBefore(ctl, target);
+				} else {
+					this.elements.headerControls.appendChild(ctl);
+				}
+				this.elements.tempControlWrap = ctl;
+				this.elements.overlay.addEventListener('click', (e) => {
+					if (!ctl.contains(e.target)) menu2.classList.remove('open');
+				});
+			}
 		}
 
 		if (stage.macros && Array.isArray(stage.macros) && stage.macros.length > 0) {
 			stage.macros.forEach((macro) => {
 				const btn = document.createElement('button');
 				btn.className =
-					'afs-btn ' + (macro.primary ? 'afs-btn-primary' : 'afs-btn-secondary');
+					'afs-btn ' +
+					(macro.primary ? 'afs-btn-primary' : 'afs-btn-secondary') +
+					' afs-btn-with-icon';
 
 				// Try to translate macro label
 				let label = macro.label;
@@ -407,7 +549,10 @@ class FilamentSwapModal {
 				else if (label === 'Finish') label = window.I18n.t('modal.macros.finish');
 				else if (label === 'Close') label = window.I18n.t('modal.macros.close');
 
-				btn.textContent = label;
+				if (macro.icon) btn.appendChild(this._createIcon(macro.icon));
+				const t = document.createElement('span');
+				t.textContent = label;
+				btn.appendChild(t);
 				btn.onclick = () => {
 					if (macro.action === 'close') {
 						this.close();

@@ -175,6 +175,8 @@ window.I18nTranslations.en = {
 			purge_x: 'Purge {x}mm',
 			expand: 'Expand',
 			collapse: 'Collapse',
+			set_temp_x: 'Set Temp {x}°C',
+			preset_temp_x: '{x}°C',
 		},
 		status: {
 			title: 'Status & Installation',
@@ -513,6 +515,9 @@ window.I18nTranslations.en = {
 			title: 'Extension Settings',
 			language: 'Language',
 			language_desc: 'Select the language for the extension interface.',
+			tempPresets: 'Temperature Presets (°C)',
+			tempPresets_desc:
+				'Enter comma-separated presets. Supports labeled pairs [LABEL:VALUE] or plain numbers VALUE; brackets are optional. Invalid entries are removed. Example: [PLA:200], [ABS:240], [220].',
 			useBrowserNotifications: 'Browser Notifications',
 			alarmOnM600: 'Alarm On M600',
 			alarmOnRunout: 'Alarm On Runout',

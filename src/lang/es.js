@@ -134,6 +134,8 @@ window.I18nTranslations.es = {
 			purge_x: 'Purgar {x}mm',
 			expand: 'Expandir',
 			collapse: 'Contraer',
+			set_temp_x: 'Ajustar Temp {x}°C',
+			preset_temp_x: '{x}°C',
 		},
 		status: {
 			title: 'Estado e Instalación',
@@ -477,8 +479,11 @@ window.I18nTranslations.es = {
 		extension: {
 			title: 'Ajustes de Extensión',
 			language: 'Idioma',
-			language_desc: 'Selecciona el idioma para la interfaz de la extensión.',
-			useBrowserNotifications: 'Notificaciones Navegador',
+			language_desc: 'Selecciona el idioma de la interfaz de la extensión.',
+			tempPresets: 'Presets de Temperatura (°C)',
+			tempPresets_desc:
+				'Lista separada por comas usada por el control de temperatura del modal.',
+			useBrowserNotifications: 'Notificaciones del Navegador',
 			alarmOnM600: 'Alarma en M600',
 			alarmOnRunout: 'Alarma en Agotamiento',
 			browserAlarms: 'Browser Alarms',
