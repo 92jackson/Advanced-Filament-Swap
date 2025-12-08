@@ -37,6 +37,12 @@ This extension is designed to work with standard Moonraker and Klipper installat
 
 ## 🚀 Installation
 
+## From Chrome/FireFox/Edge Web Store
+
+-   **Coming Soon!**
+
+## From Source
+
 ### For Chrome / Edge / Brave
 
 1.  **Download the Source**: Clone this repository or download the ZIP and extract it to a folder on your computer.
