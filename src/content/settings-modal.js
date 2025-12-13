@@ -2796,7 +2796,13 @@ class SettingsModal {
 		// Tip
 		const tip = document.createElement('div');
 		tip.className = 'afs-status-card info small afs-mt-20';
-		tip.innerHTML = window.I18n.t('settings.extension.printCompleteTip');
+		const rawTip = window.I18n.t('settings.extension.printCompleteTip');
+		if (window.SanitizeUtils && window.SanitizeUtils.sanitizeToFragment) {
+			const frag = window.SanitizeUtils.sanitizeToFragment(rawTip);
+			tip.replaceChildren(frag);
+		} else {
+			tip.textContent = rawTip;
+		}
 		container.appendChild(tip);
 
 		// Debug Logging
@@ -3048,8 +3054,11 @@ class SettingsModal {
 
 			if (names.length > 0) {
 				const list = document.createElement('p');
-				list.innerHTML =
-					window.I18n.t('settings.about.sponsors_desc') + '<br><br>' + names.join(' • ');
+				const descText = window.I18n.t('settings.about.sponsors_desc');
+				list.appendChild(document.createTextNode(descText));
+				list.appendChild(document.createElement('br'));
+				list.appendChild(document.createElement('br'));
+				list.appendChild(document.createTextNode(names.join(' • ')));
 				spContent.appendChild(list);
 			} else {
 				spContent.textContent = 'No sponsors list available.';

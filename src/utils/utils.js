@@ -149,3 +149,91 @@ window.StyleUtils = {
 		}
 	},
 };
+
+/**
+ * SanitizeUtils
+ * Sanitizes small, trusted HTML snippets using a strict allowlist to
+ * prevent XSS and avoid "unsafe innerHTML" warnings.
+ *
+ * Key points:
+ * - Parses with DOMParser (no dynamic innerHTML assignment).
+ * - Allowed tags: strong, em, b, i, u, code, br, span, a.
+ * - Allowed attributes: class, href; strips event handlers and javascript: URLs.
+ * - Disallowed elements are unwrapped (children preserved, wrapper removed).
+ *
+ * Methods:
+ * - sanitizeHtml(html): string — returns sanitized HTML string for read-only contexts.
+ * - sanitizeToFragment(html): DocumentFragment — returns nodes for safe insertion
+ *   with element.replaceChildren(...).
+ *
+ * Example:
+ * const raw = window.I18n.t('settings.extension.printCompleteTip');
+ * const frag = window.SanitizeUtils.sanitizeToFragment(raw);
+ * tip.replaceChildren(frag);
+ */
+window.SanitizeUtils = {
+	sanitizeHtml: (html) => {
+		if (typeof html !== 'string') return '';
+		const allowedTags = ['strong', 'em', 'b', 'i', 'u', 'code', 'br', 'span', 'a'];
+		const allowedAttrs = ['class', 'href'];
+		const doc = new DOMParser().parseFromString(html, 'text/html');
+		const tmp = doc.body;
+		const walk = (node) => {
+			const children = Array.from(node.children);
+			for (let i = 0; i < children.length; i++) {
+				const el = children[i];
+				const tag = el.tagName.toLowerCase();
+				if (!allowedTags.includes(tag)) {
+					const frag = document.createDocumentFragment();
+					while (el.firstChild) frag.appendChild(el.firstChild);
+					el.replaceWith(frag);
+					continue;
+				}
+				Array.from(el.attributes).forEach((attr) => {
+					const name = attr.name.toLowerCase();
+					const val = attr.value;
+					const isEvent = name.startsWith('on');
+					const isHrefJs = name === 'href' && /^javascript:/i.test(val);
+					if (!allowedAttrs.includes(name) || isEvent || isHrefJs)
+						el.removeAttribute(name);
+				});
+				walk(el);
+			}
+		};
+		walk(tmp);
+		return tmp.innerHTML;
+	},
+	sanitizeToFragment: (html) => {
+		if (typeof html !== 'string') return document.createDocumentFragment();
+		const allowedTags = ['strong', 'em', 'b', 'i', 'u', 'code', 'br', 'span', 'a'];
+		const allowedAttrs = ['class', 'href'];
+		const doc = new DOMParser().parseFromString(html, 'text/html');
+		const tmp = doc.body;
+		const walk = (node) => {
+			const children = Array.from(node.children);
+			for (let i = 0; i < children.length; i++) {
+				const el = children[i];
+				const tag = el.tagName.toLowerCase();
+				if (!allowedTags.includes(tag)) {
+					const fragInner = document.createDocumentFragment();
+					while (el.firstChild) fragInner.appendChild(el.firstChild);
+					el.replaceWith(fragInner);
+					continue;
+				}
+				Array.from(el.attributes).forEach((attr) => {
+					const name = attr.name.toLowerCase();
+					const val = attr.value;
+					const isEvent = name.startsWith('on');
+					const isHrefJs = name === 'href' && /^javascript:/i.test(val);
+					if (!allowedAttrs.includes(name) || isEvent || isHrefJs)
+						el.removeAttribute(name);
+				});
+				walk(el);
+			}
+		};
+		walk(tmp);
+		const frag = document.createDocumentFragment();
+		while (tmp.firstChild) frag.appendChild(tmp.firstChild);
+		return frag;
+	},
+};

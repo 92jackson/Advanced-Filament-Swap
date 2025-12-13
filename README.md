@@ -1,5 +1,7 @@
 # Advanced Filament Swap for Moonraker Printers (AFS)
 
+[![Version](https://img.shields.io/badge/version-0.2.1-blue)](#) [![Manifest V3](https://img.shields.io/badge/Manifest-V3-orange)](#) [![Browsers](https://img.shields.io/badge/browsers-Chrome%20%7C%20Firefox%20%7C%20Edge-brightgreen)](#) [![Data Collection](https://img.shields.io/badge/data%20collection-none-success)](#) [![i18n](https://img.shields.io/badge/i18n-EN%20%7C%20ES%20%7C%20DE%20%7C%20FR%20%7C%20ZH-blueviolet)](#)
+
 ![AFS Logo](assets/logo.png)
 
 **Advanced Filament Swap** is a powerful browser extension designed to enhance your 3D printing workflow on Moonraker-based printers. It integrates directly into your web interface (such as Mainsail or Fluidd) to provide a guided, interactive, and highly configurable filament change process.
@@ -29,7 +31,7 @@ Whether you're dealing with a mid-print filament change (M600), runouts, or just
 
 ## 📋 Requirements
 
-This extension is designed to work with standard Moonraker and Klipper installations.
+This extension is designed to work with standard Moonraker installations.
 
 -   **Moonraker**: Requires a standard installation with access to the `printer.objects.subscribe` API and file management endpoints (`/server/files/config`). Most modern versions (post-2021) support this out of the box.
 -   **Klipper**: No specific version requirements, but must support standard macro definition features.
@@ -40,6 +42,8 @@ This extension is designed to work with standard Moonraker and Klipper installat
 ## From Chrome/FireFox/Edge Web Store
 
 -   **Coming Soon!**
+
+Firefox: [Mozilla Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/advanced-filament-swap/)
 
 ## From Source
 

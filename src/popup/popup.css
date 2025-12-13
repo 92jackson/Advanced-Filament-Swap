@@ -75,6 +75,10 @@ body {
 	transition: background-color 0.2s;
 }
 
+.links > :last-child:nth-child(odd) {
+	grid-column: 1 / -1;
+}
+
 .link-btn:hover {
 	background-color: #5d6269;
 }
