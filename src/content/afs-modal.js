@@ -232,6 +232,22 @@ class FilamentSwapModal {
 			const p2 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
 			p2.setAttribute('points', '20 7 20 11 16 11');
 			svg.appendChild(p2);
+		} else if (name === 'advanced') {
+			const c1 = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+			c1.setAttribute('cx', '12');
+			c1.setAttribute('cy', '12');
+			c1.setAttribute('r', '3');
+			svg.appendChild(c1);
+			const g1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+			g1.setAttribute(
+				'd',
+				'M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h.01a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h.01a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v.01a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z'
+			);
+			svg.appendChild(g1);
+		} else if (name === 'check') {
+			const p1 = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+			p1.setAttribute('points', '20 6 9 17 4 12');
+			svg.appendChild(p1);
 		}
 		return svg;
 	}
@@ -313,14 +329,39 @@ class FilamentSwapModal {
 				h.textContent = group.header || '';
 				this.elements.stageContainer.appendChild(h);
 				const list = document.createElement('ul');
-				const cat = (group.header || '').toLowerCase().replace(/\s+/g, '-');
+				const catKey = group.cat || '';
+				const catFromHeader = (group.header || '')
+					.toLowerCase()
+					.replace(/[^a-z0-9]+/g, '-')
+					.replace(/^-+|-+$/g, '');
+				const cat = catKey || catFromHeader;
 				list.className = 'afs-action-list ' + (cat ? 'afs-cat-' + cat : '');
 				(group.items || []).forEach((item) => {
 					const li = document.createElement('li');
-					const txt = document.createElement('span');
-					txt.className = 'afs-action-text';
-					txt.textContent = item.text || '';
-					li.appendChild(txt);
+					if (item.label && item.value) {
+						const row = document.createElement('div');
+						row.className = 'afs-action-row';
+						const lbl = document.createElement('span');
+						lbl.className = 'afs-action-label';
+						lbl.textContent = item.label || '';
+						const val = document.createElement('span');
+						val.className = 'afs-action-value';
+						val.textContent = item.value || '';
+						row.appendChild(lbl);
+						row.appendChild(val);
+						li.appendChild(row);
+					} else {
+						const txt = document.createElement('span');
+						txt.className = 'afs-action-text';
+						txt.textContent = item.text || '';
+						li.appendChild(txt);
+					}
+					if (item.desc) {
+						const d = document.createElement('div');
+						d.className = 'afs-action-desc';
+						d.textContent = item.desc;
+						li.appendChild(d);
+					}
 					if (item.file) {
 						const file = document.createElement('span');
 						file.className = 'afs-action-file';

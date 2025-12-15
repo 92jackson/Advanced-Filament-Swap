@@ -238,12 +238,15 @@
 @keyframes afs-conn-blink-fill {
 	0% {
 		fill: #ff9800;
+		color: #ff9800;
 	}
 	50% {
 		fill: #000;
+		color: #000;
 	}
 	100% {
 		fill: #ff9800;
+		color: #ff9800;
 	}
 }
 
@@ -383,21 +386,50 @@
 	margin: 0 0 10px 0;
 }
 
+.afs-action-list.afs-cat-movement-safety,
+.afs-action-list.afs-cat-temperature {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	gap: 10px;
+}
+
 .afs-action-list li {
-	background: #222;
-	border-left: 4px solid #424242;
-	padding: 8px 10px;
-	margin-bottom: 6px;
-	border-radius: 4px;
+	background: #1b1b1b;
+	border: 1px solid #333;
+	padding: 10px 12px;
+	margin: 0;
+	border-radius: 6px;
+	display: block;
+}
+
+.afs-action-row {
 	display: flex;
-	flex-wrap: wrap;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 12px;
+}
+
+.afs-action-label {
+	color: #ddd;
+	font-weight: 600;
+	font-size: 0.9rem;
+}
+
+.afs-action-value {
+	color: #fff;
+	font-weight: 700;
+	font-size: 1rem;
+	text-align: right;
 }
 
 .afs-action-text {
-	color: #ddd;
-	font-weight: 500;
+	color: #eee;
+	font-weight: 600;
+	font-size: 0.9rem;
 	flex: 1;
 	text-align: left;
+	display: block;
+	flex-basis: 100%;
 }
 
 .afs-action-file {
@@ -405,6 +437,29 @@
 	font-family: 'Roboto Mono', monospace;
 	font-size: 0.85rem;
 	margin-left: auto;
+}
+
+.afs-action-desc {
+	color: #9aa0a6;
+	font-size: 0.8rem;
+	line-height: 1.35;
+	margin-top: 4px;
+	text-align: left;
+}
+
+.afs-action-header {
+	margin-top: 16px;
+	margin-bottom: 8px;
+	font-size: 1rem;
+	color: #ffffff;
+	font-weight: 700;
+}
+
+@media (max-width: 520px) {
+	.afs-action-list.afs-cat-movement-safety,
+	.afs-action-list.afs-cat-temperature {
+		grid-template-columns: 1fr;
+	}
 }
 
 .afs-action-preview {

@@ -273,6 +273,180 @@
 						};
 
 						createSettingsFAB(setupRequired);
+						if (client.testing) {
+							if (!document.querySelector('.afs-preview-border')) {
+								const border = document.createElement('div');
+								border.className = 'afs-preview-border';
+								border.style.position = 'fixed';
+								border.style.top = '0';
+								border.style.left = '0';
+								border.style.right = '0';
+								border.style.bottom = '0';
+								border.style.boxSizing = 'border-box';
+								border.style.border = '4px dashed #f39c12';
+								border.style.backgroundColor = '#00000055';
+								border.style.pointerEvents = 'none';
+								border.style.zIndex = '999';
+								const label = document.createElement('div');
+								label.style.position = 'absolute';
+								label.style.top = '8px';
+								label.style.left = '50%';
+								label.style.transform = 'translateX(-50%)';
+								label.style.animation =
+									'afs-conn-blink-fill 0.8s infinite ease-in-out';
+								label.style.color = '#000';
+								label.style.fontWeight = '600';
+								label.style.fontFamily = 'system-ui, sans-serif';
+								label.style.padding = '6px 10px';
+								label.textContent = 'AFS Preview Mode';
+								border.appendChild(label);
+								document.body.appendChild(border);
+							}
+							if (!document.querySelector('.afs-preview-fab')) {
+								const fab = document.createElement('div');
+								fab.className = 'afs-preview-fab';
+								fab.style.position = 'fixed';
+								fab.style.bottom = '24px';
+								fab.style.left = '50%';
+								fab.style.transform = 'translateX(-50%)';
+								fab.style.zIndex = '9998';
+								fab.style.display = 'flex';
+								fab.style.alignItems = 'center';
+								fab.style.justifyContent = 'center';
+								fab.style.width = '140px';
+								fab.style.height = '44px';
+								fab.style.borderRadius = '22px';
+								fab.style.background = '#f39c12';
+								fab.style.color = '#000';
+								fab.style.fontWeight = '600';
+								fab.style.fontFamily = 'system-ui, sans-serif';
+								fab.style.boxShadow = '0 4px 12px rgba(0,0,0,0.25)';
+								fab.style.cursor = 'pointer';
+								fab.style.userSelect = 'none';
+								fab.title = 'Start Preview Swap';
+								fab.textContent = 'Preview Swap';
+								const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+								const send = (detail) => {
+									window.dispatchEvent(new CustomEvent('afs-state', { detail }));
+								};
+								let previewPid = 0;
+								let previewTs = 0;
+								const step = async (origin, status, eta, delayMs) => {
+									send({
+										processid: previewPid,
+										origin,
+										status,
+										eta,
+										ts: previewTs,
+									});
+									if (delayMs > 0) await wait(delayMs);
+								};
+								const originalSendGcode = window.sendGcode;
+								window.sendGcode = async (gcode) => {
+									const cmd = String(gcode || '');
+									if (!client.testing || !window.afsPreviewActive) {
+										return originalSendGcode
+											? originalSendGcode(gcode)
+											: Promise.resolve();
+									}
+									if (/AFS_UNLOAD\b/.test(cmd)) {
+										await step(
+											'filament_swap_unloading',
+											'unloading',
+											18,
+											18000
+										);
+										await step('filament_swap_loading', 'waiting', 0, 0);
+										return Promise.resolve();
+									}
+									if (/LOAD_FILAMENT\b/.test(cmd)) {
+										const purgeMatch = /PURGE\s*=\s*(\d+)/i.exec(cmd);
+										if (purgeMatch) {
+											const mm = parseInt(purgeMatch[1], 10) || 0;
+											const eta = Math.max(0, Math.round((mm / 200) * 60));
+											await step(
+												'filament_swap_loading',
+												'purging',
+												eta,
+												eta * 1000
+											);
+										} else {
+											await step(
+												'filament_swap_loading',
+												'loading',
+												45,
+												45000
+											);
+										}
+										await step('load_new_loaded', '', 0, 1000);
+										return Promise.resolve();
+									}
+									if (/FINISH_SWAP\b/.test(cmd)) {
+										await step('complete', 'temp_restored', 0, 2000);
+										await step('complete', 'resuming', 5, 5000);
+										send({
+											processid: -1,
+											origin: '',
+											status: '',
+											eta: 0,
+											ts: previewTs,
+										});
+										window.afsPreviewActive = false;
+										return Promise.resolve();
+									}
+									if (/AFS_SET_TARGET\b/.test(cmd)) {
+										await step('filament_swap_loading', 'heating', 15, 15000);
+										await step('filament_swap_loading', 'waiting', 0, 0);
+										return Promise.resolve();
+									}
+									return Promise.resolve();
+								};
+								fab.onclick = async () => {
+									previewPid = Date.now();
+									previewTs = Math.floor(Date.now() / 1000);
+									window.afsPreviewActive = true;
+									await step('filament_swap_unloading', 'homing', 0, 1500);
+									await step('filament_swap_unloading', 'parking', 0, 2000);
+									await step('filament_swap_unloading', 'heating', 15, 15000);
+									await step('filament_swap_unloading', 'unloading', 18, 18000);
+									await step('filament_swap_loading', 'waiting', 0, 0);
+								};
+								document.body.appendChild(fab);
+
+								//Exit Moonraker Spoofing Button
+								const closeBtn = document.createElement('div');
+								closeBtn.className = 'afs-preview-close';
+								closeBtn.style.position = 'absolute';
+								closeBtn.style.top = '12px';
+								closeBtn.style.right = '12px';
+								closeBtn.style.width = '50px';
+								closeBtn.style.height = '50px';
+								closeBtn.style.borderRadius = '50%';
+								closeBtn.style.background = '#000';
+								closeBtn.style.color = '#fff';
+								closeBtn.style.fontWeight = '600';
+								closeBtn.style.fontFamily = 'system-ui, sans-serif';
+								closeBtn.style.lineHeight = '50px';
+								closeBtn.style.textAlign = 'center';
+								closeBtn.style.cursor = 'pointer';
+								closeBtn.style.zIndex = '9999';
+								closeBtn.style.userSelect = 'none';
+								closeBtn.title = 'Exit Moonraker Spoofing';
+								closeBtn.textContent = '×';
+								document.body.appendChild(closeBtn);
+
+								closeBtn.onclick = () => {
+									const u = new URL(location.href);
+									const p = u.searchParams;
+									p.delete('spoof-moonraker');
+									p.delete('afs_installed');
+									p.delete('afs_include');
+									p.delete('afs_runout_fixed');
+									u.search = p.toString();
+									location.href = u.toString();
+								};
+							}
+						}
 					})
 					.catch((error) => {
 						if (window.logger)

@@ -174,7 +174,23 @@ window.StyleUtils = {
 window.SanitizeUtils = {
 	sanitizeHtml: (html) => {
 		if (typeof html !== 'string') return '';
-		const allowedTags = ['strong', 'em', 'b', 'i', 'u', 'code', 'br', 'span', 'a'];
+		const allowedTags = [
+			'strong',
+			'em',
+			'b',
+			'i',
+			'u',
+			'code',
+			'br',
+			'span',
+			'a',
+			'p',
+			'h3',
+			'h4',
+			'ul',
+			'li',
+			'small',
+		];
 		const allowedAttrs = ['class', 'href'];
 		const doc = new DOMParser().parseFromString(html, 'text/html');
 		const tmp = doc.body;
@@ -205,7 +221,23 @@ window.SanitizeUtils = {
 	},
 	sanitizeToFragment: (html) => {
 		if (typeof html !== 'string') return document.createDocumentFragment();
-		const allowedTags = ['strong', 'em', 'b', 'i', 'u', 'code', 'br', 'span', 'a'];
+		const allowedTags = [
+			'strong',
+			'em',
+			'b',
+			'i',
+			'u',
+			'code',
+			'br',
+			'span',
+			'a',
+			'p',
+			'h3',
+			'h4',
+			'ul',
+			'li',
+			'small',
+		];
 		const allowedAttrs = ['class', 'href'];
 		const doc = new DOMParser().parseFromString(html, 'text/html');
 		const tmp = doc.body;

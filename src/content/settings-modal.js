@@ -60,6 +60,12 @@ class SettingsModal {
 		const sidebar = document.createElement('div');
 		sidebar.className = 'afs-settings-sidebar';
 
+		const tabWelcome = document.createElement('div');
+		tabWelcome.className = 'afs-settings-sidebar-item afs-hidden';
+		tabWelcome.textContent = window.I18n.t('settings.menu.welcome');
+		tabWelcome.onclick = () => this._switchTab('welcome');
+		this.elements.tabWelcome = tabWelcome;
+
 		const tabSummary = document.createElement('div');
 		tabSummary.className = 'afs-settings-sidebar-item active';
 		tabSummary.textContent = window.I18n.t('settings.menu.status');
@@ -90,6 +96,7 @@ class SettingsModal {
 		tabAbout.onclick = () => this._switchTab('about');
 		this.elements.tabAbout = tabAbout;
 
+		sidebar.appendChild(this.elements.tabWelcome);
 		sidebar.appendChild(tabSummary);
 		sidebar.appendChild(tabConfig);
 		sidebar.appendChild(tabBackup);
@@ -290,6 +297,9 @@ class SettingsModal {
 
 		this.activeTab = tab;
 
+		if (this.elements.tabWelcome)
+			this.elements.tabWelcome.classList.toggle('active', tab === 'welcome');
+
 		if (this.elements.tabSummary)
 			this.elements.tabSummary.classList.toggle('active', tab === 'summary');
 
@@ -409,6 +419,27 @@ class SettingsModal {
 			};
 
 			this.snapshot = snapshot;
+
+			const setupCompletedOn = window.UserSettings.get('setupCompletedOn');
+			// Only show welcome if not set up AND config is not installed
+			const showWelcome =
+				!setupCompletedOn && !this.state.isInstalled && !this.state.configExists;
+
+			if (this.elements.tabWelcome) {
+				if (showWelcome) {
+					this.elements.tabWelcome.classList.remove('afs-hidden');
+					// If we are on summary (default), switch to welcome automatically
+					if (this.activeTab === 'summary') {
+						this._switchTab('welcome');
+					}
+				} else {
+					this.elements.tabWelcome.classList.add('afs-hidden');
+					// If we are somehow on welcome but shouldn't be, switch away
+					if (this.activeTab === 'welcome') {
+						this._switchTab('summary');
+					}
+				}
+			}
 
 			this.render();
 		} catch (err) {
@@ -534,7 +565,9 @@ class SettingsModal {
 	render() {
 		this.elements.scrollContainer.textContent = '';
 
-		if (this.activeTab === 'summary') {
+		if (this.activeTab === 'welcome') {
+			this._renderWelcomeTab();
+		} else if (this.activeTab === 'summary') {
 			this._renderSummaryTab();
 		} else if (this.activeTab === 'config') {
 			this._renderConfigTab();
@@ -748,7 +781,18 @@ class SettingsModal {
 					primary: true,
 					icon: 'refresh',
 					callback: () => {
-						location.reload();
+						if (this.client && this.client.testing) {
+							const u = new URL(location.href);
+							const p = u.searchParams;
+							p.set('spoof-moonraker', 'true');
+							p.delete('afs_installed');
+							p.delete('afs_include');
+							p.delete('afs_runout_fixed');
+							u.search = p.toString();
+							location.href = u.toString();
+						} else {
+							location.reload();
+						}
 					},
 				},
 				{
@@ -831,6 +875,92 @@ class SettingsModal {
 			},
 		];
 		modal.pushStage('uninstall_confirm');
+	}
+
+	_renderWelcomeTab() {
+		const container = this.elements.scrollContainer;
+
+		const header = document.createElement('div');
+		header.className = 'afs-settings-header';
+		const title = document.createElement('h2');
+		title.className = 'afs-settings-title';
+		title.textContent = window.I18n.t('settings.welcome.title');
+		header.appendChild(title);
+		container.appendChild(header);
+
+		// Logo
+		const logoContainer = document.createElement('div');
+		logoContainer.className = 'afs-welcome-logo-container';
+
+		const logo = document.createElement('img');
+		const logoUrl =
+			typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.getURL
+				? chrome.runtime.getURL('assets/logo.png')
+				: 'assets/logo.png';
+		logo.src = logoUrl;
+		logo.alt = window.I18n.t('settings.extension.logoAlt') || 'AFS Logo';
+		logo.className = 'afs-welcome-logo';
+		logoContainer.appendChild(logo);
+		container.appendChild(logoContainer);
+
+		// Language Selector
+		const langGroup = document.createElement('div');
+		langGroup.className = 'afs-form-group afs-mb-20';
+
+		const langLabel = document.createElement('label');
+		langLabel.className = 'afs-label';
+		langLabel.textContent = window.I18n.t('settings.extension.language');
+		langGroup.appendChild(langLabel);
+
+		const langSelect = document.createElement('select');
+		langSelect.className = 'afs-input';
+
+		window.I18n.getAvailableLocales().forEach((locale) => {
+			const opt = document.createElement('option');
+			opt.value = locale.code;
+			opt.textContent = `${locale.name} (${locale.code})`;
+			if (locale.code === window.I18n.locale) opt.selected = true;
+			langSelect.appendChild(opt);
+		});
+
+		langSelect.onchange = (e) => {
+			window.I18n.setLocale(e.target.value);
+			this._updateSidebarText();
+			this.render();
+		};
+		langGroup.appendChild(langSelect);
+
+		const langDesc = document.createElement('div');
+		langDesc.className = 'afs-field-desc';
+		langDesc.textContent = window.I18n.t('settings.extension.language_desc');
+		langGroup.appendChild(langDesc);
+
+		container.appendChild(langGroup);
+
+		// Description
+		const desc = document.createElement('div');
+		desc.className = 'afs-welcome-description';
+
+		const rawDesc = window.I18n.t('settings.welcome.description');
+		if (window.SanitizeUtils) {
+			const frag = window.SanitizeUtils.sanitizeToFragment(rawDesc);
+			desc.appendChild(frag);
+		} else {
+			desc.textContent = rawDesc;
+		}
+		container.appendChild(desc);
+
+		// Install Button
+		const btnContainer = document.createElement('div');
+		btnContainer.className = 'afs-welcome-install-container';
+
+		const btnInstall = document.createElement('button');
+		btnInstall.className = 'afs-btn-primary';
+		btnInstall.textContent = window.I18n.t('settings.welcome.install_button');
+		btnInstall.onclick = () => this._saveConfig(true);
+
+		btnContainer.appendChild(btnInstall);
+		container.appendChild(btnContainer);
 	}
 
 	_renderSummaryTab() {
@@ -1363,7 +1493,8 @@ class SettingsModal {
 					const axis = item.key === 'park_x' ? 'X' : 'Y';
 					const max =
 						axis === 'X' ? this.state.axisMaximums.x : this.state.axisMaximums.y;
-					return `${window.I18n.t('settings.status.max')} (${max}mm)`;
+					const effective = Math.max(0, max - 2);
+					return `${effective}mm (${window.I18n.t('settings.status.max')} - 2mm)`;
 				}
 				return v + 'mm';
 			}
@@ -1937,6 +2068,7 @@ class SettingsModal {
 
 				const isX = item.key === 'park_x';
 				const maxVal = isX ? this.state.axisMaximums.x : this.state.axisMaximums.y;
+				const safetyGrace = 2;
 				const currentVal = parseFloat(item.value);
 				// If -1 or > max, it means "Use Max" (handled by macro), so we toggle ON
 				const isUsingMax = currentVal === -1 || currentVal > maxVal;
@@ -1958,7 +2090,7 @@ class SettingsModal {
 
 				const toggleLabel = document.createElement('span');
 				toggleLabel.className = 'afs-toggle-text';
-				toggleLabel.textContent = window.I18n.t('settings.common.use_max', { max: maxVal });
+				toggleLabel.textContent = window.I18n.t('settings.common.use_max');
 				toggleLabel.onclick = () => cb.click();
 
 				toggleRow.appendChild(labelSwitch);
@@ -1977,7 +2109,7 @@ class SettingsModal {
 				input.type = 'number';
 				input.className = 'afs-input';
 				// If using max, show max (greyed out). Else show actual value.
-				input.value = isUsingMax ? maxVal : currentVal;
+				input.value = isUsingMax ? Math.max(0, maxVal - safetyGrace) : currentVal;
 				input.disabled = isUsingMax;
 				if (isUsingMax) input.classList.add('disabled');
 				const inputId = `afs-input-${item.key}`;
@@ -2006,7 +2138,7 @@ class SettingsModal {
 					if (e.target.checked) {
 						// Toggle ON: Set to -1 (Use Max)
 						item.value = '-1';
-						input.value = maxVal;
+						input.value = Math.max(0, maxVal - safetyGrace);
 						input.disabled = true;
 						input.classList.add('disabled');
 					} else {
@@ -2025,7 +2157,7 @@ class SettingsModal {
 					if (val === -1 || val > maxVal) {
 						cb.checked = true;
 						item.value = '-1';
-						input.value = maxVal;
+						input.value = Math.max(0, maxVal - safetyGrace);
 						input.disabled = true;
 						input.classList.add('disabled');
 					} else {
@@ -2877,6 +3009,18 @@ class SettingsModal {
 		hero.appendChild(headerInfo);
 		wrapper.appendChild(hero);
 
+		// Disclaimer
+		const disclaimer = document.createElement('div');
+		disclaimer.className = 'afs-tip';
+		disclaimer.textContent = window.I18n.t('settings.about.disclaimer');
+		disclaimer.style.marginBottom = 0;
+		wrapper.appendChild(disclaimer);
+
+		const uninstall = document.createElement('div');
+		uninstall.className = 'afs-tip';
+		uninstall.textContent = window.I18n.t('settings.about.uninstall_info');
+		wrapper.appendChild(uninstall);
+
 		// Version Fetching
 		if (window.VersionUtils) {
 			if (window.VersionUtils.getCurrentVersion) {
@@ -3296,8 +3440,114 @@ variable_status_string_data: {
 gcode:
 `;
 		}
+		const axisMax = this.state.axisMaximums || { x: 0, y: 0, z: 0 };
+		const getDef = (k) => this.configData.defaults.find((d) => d.key === k);
+		const valStr = (k) => {
+			const d = getDef(k);
+			return d ? String(d.value || d.defaultValue || '').trim() : '';
+		};
+		const toNum = (s) => {
+			const n = parseFloat(String(s).replace(/^"|"$/g, ''));
+			return isNaN(n) ? null : n;
+		};
+		const px = toNum(valStr('park_x'));
+		const py = toNum(valStr('park_y'));
+		const pz = toNum(valStr('park_z'));
+		const zmin = toNum(valStr('zmin'));
+		const dtemp = toNum(valStr('default_temp'));
+		const movementItems = [];
+		const tempItems = [];
+		if (px !== null) {
+			if (px === -1) {
+				movementItems.push({
+					label: window.I18n.t('settings.status.summary.park_x_label'),
+					value: `${Math.max(0, axisMax.x - 2)}mm`,
+					desc: window.I18n.t('settings.status.summary.max_travel_desc'),
+				});
+			} else {
+				const warn = px < 0 || (axisMax.x && px > axisMax.x);
+				movementItems.push({
+					label: window.I18n.t('settings.status.summary.park_x_label'),
+					value: `${px}mm`,
+					desc: warn
+						? window.I18n.t('settings.status.summary.outside_area_desc', {
+								max: axisMax.x,
+						  })
+						: undefined,
+				});
+			}
+		}
+		if (py !== null) {
+			if (py === -1) {
+				movementItems.push({
+					label: window.I18n.t('settings.status.summary.park_y_label'),
+					value: `${Math.max(0, axisMax.y - 2)}mm`,
+					desc: window.I18n.t('settings.status.summary.max_travel_desc'),
+				});
+			} else {
+				const warn = py < 0 || (axisMax.y && py > axisMax.y);
+				movementItems.push({
+					label: window.I18n.t('settings.status.summary.park_y_label'),
+					value: `${py}mm`,
+					desc: warn
+						? window.I18n.t('settings.status.summary.outside_area_desc', {
+								max: axisMax.y,
+						  })
+						: undefined,
+				});
+			}
+		}
+		if (pz !== null) {
+			const warn = pz < 0;
+			movementItems.push({
+				label: window.I18n.t('settings.status.summary.park_z_label'),
+				value: `${pz}mm`,
+				desc: warn
+					? window.I18n.t('settings.status.summary.negative_value_desc')
+					: window.I18n.t('settings.status.summary.lift_desc'),
+			});
+		}
+		if (zmin !== null) {
+			const warn = zmin < 0 || (axisMax.z && zmin > axisMax.z);
+			movementItems.push({
+				label: window.I18n.t('settings.status.summary.zmin_label'),
+				value: `${zmin}mm`,
+				desc: warn
+					? window.I18n.t('settings.status.summary.out_of_axis_desc', { max: axisMax.z })
+					: window.I18n.t('settings.status.summary.zmin_desc'),
+			});
+		}
+		if (dtemp !== null) {
+			tempItems.push({
+				label: window.I18n.t('settings.status.summary.default_temp_label'),
+				value: `${dtemp}°C`,
+				desc: window.I18n.t('settings.status.summary.default_temp_desc'),
+			});
+		}
 		const cfg = {
 			stages: {
+				critical_confirm: {
+					title: window.I18n.t('settings.status.critical_confirm_title'),
+					timelineLabel: window.I18n.t('settings.status.safety_review_label'),
+					previousStages: [],
+					upcomingStages: ['Confirm', 'Apply', 'Complete'],
+					description: window.I18n.t('settings.status.critical_confirm_desc'),
+					macros: [],
+					actionItems: [],
+					actionGroups: [
+						{
+							cat: 'movement-safety',
+							header: window.I18n.t('settings.config.groups.Movement'),
+							items: movementItems,
+						},
+						{
+							cat: 'temperature',
+							header: window.I18n.t('settings.config.groups.Temperature'),
+							items: tempItems,
+						},
+					],
+					colorScheme: '#f57f17',
+				},
 				install_confirm: {
 					title: window.I18n.t('settings.status.install_confirm_title'),
 					timelineLabel: 'Confirm',
@@ -3557,7 +3807,18 @@ gcode:
 					label: window.I18n.t('settings.common.refresh_page'),
 					primary: true,
 					callback: () => {
-						location.reload();
+						if (this.client && this.client.testing) {
+							const u = new URL(location.href);
+							const p = u.searchParams;
+							p.set('spoof-moonraker', 'true');
+							p.set('afs_installed', 'true');
+							p.set('afs_include', 'true');
+							p.set('afs_runout_fixed', 'true');
+							u.search = p.toString();
+							location.href = u.toString();
+						} else {
+							location.reload();
+						}
 					},
 				},
 				{
@@ -3570,6 +3831,32 @@ gcode:
 			modal.pushStage('success');
 			modal.pushUpdate(window.I18n.t('modal.log.success'), 0);
 		};
+		const safetyStage = cfg.stages.critical_confirm;
+		safetyStage.macros = [
+			{
+				label: window.I18n.t('settings.common.cancel'),
+				icon: 'close',
+				callback: () => {
+					modal.close();
+				},
+			},
+			{
+				label: window.I18n.t('settings.common.edit_config'),
+				icon: 'advanced',
+				callback: () => {
+					modal.close();
+					this._switchTab('config');
+				},
+			},
+			{
+				label: window.I18n.t('settings.common.confirm_settings'),
+				primary: true,
+				icon: 'check',
+				callback: () => {
+					modal.pushStage('install_confirm');
+				},
+			},
+		];
 		const confirmStage = cfg.stages.install_confirm;
 		confirmStage.macros = [
 			{
@@ -3611,7 +3898,7 @@ gcode:
 				},
 			},
 		];
-		modal.pushStage('install_confirm');
+		modal.pushStage('critical_confirm');
 	}
 
 	_processSave(forceInstall) {

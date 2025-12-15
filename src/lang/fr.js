@@ -140,7 +140,9 @@ window.I18nTranslations.fr = {
 			unsaved_warning:
 				'Vous avez des modifications non enregistrées. Êtes-vous sûr de vouloir quitter ? Les changements seront perdus.',
 			enable: 'Activer',
-			use_max: 'Utiliser Max ({max}mm)',
+			use_max: 'Utiliser le maximum de l’imprimante',
+			edit_config: 'Modifier la configuration',
+			confirm_settings: 'Je confirme ces paramètres',
 			time: {
 				second: 'seconde',
 				seconds: 'secondes',
@@ -223,17 +225,38 @@ window.I18nTranslations.fr = {
 				'Aucun changement nécessaire. Les macros AFS ont priorité et écrasent en toute sécurité.',
 			footer_general_advice:
 				'Utilisez « Installer / Réparer » pour appliquer automatiquement les correctifs recommandés.',
-			applyingUninstallTitle: 'Applying Uninstall',
-			applyingUninstallDesc: 'Removing include, restoring runout, and restarting firmware...',
-			timelineApply: 'Apply',
-			timelineConfirm: 'Confirm',
-			timelineComplete: 'Complete',
+			applyingUninstallTitle: 'Application de la désinstallation',
+			applyingUninstallDesc:
+				'Suppression de l’inclusion, restauration du runout, et redémarrage du firmware...',
+			timelineApply: 'Appliquer',
+			timelineConfirm: 'Confirmer',
+			timelineComplete: 'Complet',
 			afs_title: 'Advanced Filament Swap',
 			include_title: 'printer.cfg Include',
 			runout_title: 'Runout Sensor',
 			macros_title: 'Macros',
 			invalid_config: 'Invalid Config',
 			ok: 'OK',
+			critical_confirm_title: 'Vérifier les paramètres de sécurité',
+			safety_review_label: 'Revue sécurité',
+			critical_confirm_desc:
+				'Avant l’installation, confirmez les paramètres de mouvement et de température. Ils déterminent où la tête se gare et comment elle chauffe ; des valeurs incorrectes peuvent endommager le matériel.',
+			summary: {
+				park_x_label: 'Position de parcage X',
+				park_y_label: 'Position de parcage Y',
+				park_z_label: 'Distance de levage Z',
+				zmin_label: 'Z minimum pour le parcage',
+				default_temp_label: 'Température par défaut du hotend',
+				max_travel_desc: 'course max de l’imprimante (décalage sécurité 2 mm)',
+				outside_area_desc: 'hors zone imprimable (0–{max} mm)',
+				negative_value_desc: 'valeur négative',
+				lift_desc: 'la tête est levée de cette valeur au début du changement',
+				out_of_axis_desc: 'hors plage d’axe (0–{max} mm)',
+				zmin_desc:
+					'Si la tête est plus proche que cette valeur du plateau, elle se lève au moins jusqu’à cette hauteur avant le parcage',
+				default_temp_desc:
+					'utilisée si le hotend n’est pas déjà chauffé au début du changement',
+			},
 			max: 'Max',
 		},
 		config: {
@@ -551,6 +574,10 @@ window.I18nTranslations.fr = {
 			fetch_fail: 'Échec chargement donateurs. Réessayez plus tard.',
 			loading: 'Loading...',
 			unknown: 'Unknown',
+			disclaimer:
+				'Avertissement : cet outil intègre des mécanismes de sécurité et réalise des sauvegardes lorsque c’est possible. Toutefois, la modification de la configuration de l’imprimante comporte des risques. Vous assumez l’entière responsabilité des changements effectués et de leurs conséquences. Ce logiciel est fourni « tel quel », sans aucune garantie.',
+			uninstall_info:
+				'Pour désinstaller en toute sécurité : utilisez d’abord le bouton Désinstaller dans l’onglet État & Installation. Cela rétablit les modifications de configuration et supprime la ligne include. Ensuite, vous pouvez désinstaller l’extension du navigateur.',
 		},
 	},
 };

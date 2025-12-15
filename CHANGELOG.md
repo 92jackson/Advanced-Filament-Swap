@@ -2,6 +2,19 @@
 
 All notable changes to the extension (including the bundled cfg) are documented here. Version numbers follow the extension manifest.
 
+## v0.3.0 — 2025-12-14
+
+### Added
+
+-   New Welcome screen added to the settings modal, with quick settings for selecting a language and installing the cfg.
+-   Disclaimer added to the About tab of the settings modal.
+-   Uninstall info added to the About tab of the settings modal.
+-   Spoof Moonraker mode - use `?spoof-moonraker=true` to test the interface on any website.
+
+### Changes
+
+-   2mm safety margin on park positions (when defaulting to the printer's max travel) made clearer.
+
 ## v0.2.1 — 2025-12-13
 
 ### Changed

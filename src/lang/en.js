@@ -129,11 +129,19 @@ window.I18nTranslations.en = {
 	},
 	settings: {
 		menu: {
+			welcome: 'Welcome',
 			status: 'Status & Install',
 			config: 'Filament Swap Config',
 			backup: 'Backup & Restore',
 			extension: 'Extension Settings',
 			about: 'About',
+		},
+		welcome: {
+			title: 'Welcome to Advanced Filament Swap',
+			language: 'Select Language',
+			description:
+				'<h3>About</h3><p>AFS provides a guided, interactive filament change and runout process.</p><p>The setup assistant will:</p><ul><li>Install the necessary configuration macros to your printer.</li><li>Enable the browser extension to detect these macros.</li></ul><small>N.B.&nbsp; This will make changes to your printer\'s config, however, a backup will be made. This script is designed to undo all changes if you decide to uninstall at a later time.</small><p>To begin, click "Install & Setup" below.</p>',
+			install_button: 'Install & Setup',
 		},
 		common: {
 			enabled: 'Enabled',
@@ -160,7 +168,9 @@ window.I18nTranslations.en = {
 			unsaved_warning:
 				'You have unsaved changes. Are you sure you want to leave? Changes will be lost.',
 			enable: 'Enable',
-			use_max: 'Use Max ({max}mm)',
+			use_max: "Use Printer's Max",
+			edit_config: 'Edit Configuration',
+			confirm_settings: 'I Confirm These Settings',
 			time: {
 				second: 'second',
 				seconds: 'seconds',
@@ -211,6 +221,10 @@ window.I18nTranslations.en = {
 			restart_desc: 'Restarting Klipper firmware. This may take a moment...',
 			success_title: 'Install Complete',
 			success_desc: 'Advanced Filament Swap installed. Restart and refresh to apply changes.',
+			critical_confirm_title: 'Review Safety Settings',
+			safety_review_label: 'Safety Review',
+			critical_confirm_desc:
+				'Before installing, confirm movement and temperature settings. These determine where the printer parks and how it heats; incorrect values can damage hardware.',
 			install_blocked_title: 'Install Blocked',
 			install_blocked_desc: 'An active print is in progress. Stop the print and try again.',
 			uninstall_confirm_title: 'Uninstall Advanced Filament Swap',
@@ -243,6 +257,21 @@ window.I18nTranslations.en = {
 			footer_runout_fix: 'Click Install / Repair to update the runout sensor configuration.',
 			footer_macros_ok: 'No changes necessary. AFS macros take priority and override safely.',
 			footer_general_advice: 'Use Install / Repair to apply recommended fixes automatically.',
+			summary: {
+				park_x_label: 'Park X position',
+				park_y_label: 'Park Y position',
+				park_z_label: 'Lift Z distance',
+				zmin_label: 'Minimum Z for park',
+				default_temp_label: 'Default hotend temperature',
+				max_travel_desc: "printer's max travel (applies 2mm safety offset)",
+				outside_area_desc: 'outside printable area (0–{max}mm)',
+				negative_value_desc: 'negative value',
+				lift_desc: 'print head is lifted by this at the start of the swap',
+				out_of_axis_desc: 'out of axis range (0–{max}mm)',
+				zmin_desc:
+					'if the head is closer than this to the bed, it lifts to at least this height when parking',
+				default_temp_desc: "used if the hotend isn't already heated when a swap begins",
+			},
 		},
 		config: {
 			title: 'Filament Swap Configuration',
@@ -555,6 +584,10 @@ window.I18nTranslations.en = {
 			fetch_fail: 'Failed to load donors. Please try again later.',
 			loading: 'Loading...',
 			unknown: 'Unknown',
+			disclaimer:
+				'Disclaimer: This tool includes safety mechanisms and takes backups where possible. However, modifying printer configuration carries inherent risk. You assume all responsibility for any changes made and their consequences. This software is provided “as is”, without warranty of any kind.',
+			uninstall_info:
+				'To uninstall safely: use the Uninstall button on the Status & Installation tab first. This reverts configuration changes and removes the include. After that, you may uninstall the browser extension.',
 		},
 	},
 };

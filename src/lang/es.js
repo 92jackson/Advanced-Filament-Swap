@@ -119,7 +119,9 @@ window.I18nTranslations.es = {
 			unsaved_warning:
 				'Tienes cambios sin guardar. ¿Estás seguro de que quieres salir? Los cambios se perderán.',
 			enable: 'Habilitar',
-			use_max: 'Usar Max ({max}mm)',
+			use_max: 'Usar el máximo de la impresora',
+			edit_config: 'Editar configuración',
+			confirm_settings: 'Confirmo estos ajustes',
 			time: {
 				second: 'segundo',
 				seconds: 'segundos',
@@ -194,11 +196,11 @@ window.I18nTranslations.es = {
 				'Usa «Instalar / Reparar» para aplicar automáticamente las correcciones recomendadas.',
 			uninstall_success_desc:
 				'Advanced Filament Swap desinstalado. Reinicio realizado. Actualizar página para aplicar cambios.',
-			applyingUninstallTitle: 'Applying Uninstall',
-			applyingUninstallDesc: 'Removing include, restoring runout, and restarting firmware...',
-			timelineApply: 'Apply',
-			timelineConfirm: 'Confirm',
-			timelineComplete: 'Complete',
+			applyingUninstallTitle: 'Aplicando desinstalación',
+			applyingUninstallDesc: 'Quitando include, restaurando runout y reiniciando firmware...',
+			timelineApply: 'Aplicar',
+			timelineConfirm: 'Confirmar',
+			timelineComplete: 'Completo',
 			afs_title: 'Advanced Filament Swap',
 			include_title: 'printer.cfg Include',
 			runout_title: 'Runout Sensor',
@@ -206,6 +208,26 @@ window.I18nTranslations.es = {
 			invalid_config: 'Invalid Config',
 			ok: 'OK',
 			max: 'Max',
+			critical_confirm_title: 'Revisar ajustes de seguridad',
+			safety_review_label: 'Revisión de seguridad',
+			critical_confirm_desc:
+				'Antes de instalar, confirma los ajustes de movimiento y temperatura. Estos determinan dónde se aparca y cómo calienta; valores incorrectos pueden dañar el hardware.',
+			summary: {
+				park_x_label: 'Posición de parqueo X',
+				park_y_label: 'Posición de parqueo Y',
+				park_z_label: 'Distancia de elevación Z',
+				zmin_label: 'Z mínima para parqueo',
+				default_temp_label: 'Temperatura predeterminada del hotend',
+				max_travel_desc:
+					'recorrido máximo de la impresora (aplica margen de seguridad de 2 mm)',
+				outside_area_desc: 'fuera del área imprimible (0–{max} mm)',
+				negative_value_desc: 'valor negativo',
+				lift_desc: 'el cabezal se eleva esta distancia al iniciar el cambio',
+				out_of_axis_desc: 'fuera del rango del eje (0–{max} mm)',
+				zmin_desc:
+					'Si la cabeza está más cerca que este valor de la cama, se eleva al menos hasta esta altura antes de aparcar',
+				default_temp_desc: 'Se usa si el hotend no está ya calentado al iniciar el cambio',
+			},
 		},
 		config: {
 			title: 'Configuración de Cambio de Filamento',
@@ -520,6 +542,10 @@ window.I18nTranslations.es = {
 			fetch_fail: 'Fallo al cargar donantes. Intenta más tarde.',
 			loading: 'Loading...',
 			unknown: 'Unknown',
+			disclaimer:
+				'Aviso: Esta herramienta incluye mecanismos de seguridad y realiza copias de seguridad cuando es posible. Sin embargo, modificar la configuración de la impresora conlleva riesgos. Asumes toda la responsabilidad por los cambios realizados y sus consecuencias. Este software se proporciona “tal cual”, sin garantía de ningún tipo.',
+			uninstall_info:
+				'Para desinstalar de forma segura: usa primero el botón Desinstalar en la pestaña Estado e Instalación. Esto revierte los cambios de configuración y elimina la línea include. Después, puedes desinstalar la extensión del navegador.',
 		},
 	},
 };

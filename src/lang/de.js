@@ -139,7 +139,9 @@ window.I18nTranslations.de = {
 			unsaved_warning:
 				'Du hast ungespeicherte Änderungen. Möchtest du wirklich verlassen? Änderungen gehen verloren.',
 			enable: 'Aktivieren',
-			use_max: 'Nutze Max ({max}mm)',
+			use_max: 'Maximalwert des Druckers verwenden',
+			edit_config: 'Konfiguration bearbeiten',
+			confirm_settings: 'Ich bestätige diese Einstellungen',
 			time: {
 				second: 'Sekunde',
 				seconds: 'Sekunden',
@@ -158,7 +160,7 @@ window.I18nTranslations.de = {
 			preset_temp_x: '{x}°C',
 		},
 		status: {
-			title: 'Status & Installation',
+			title: 'Status & Install',
 			installed: 'Advanced Filament Swap ist installiert',
 			installed_msg: 'Konfigurationsdatei erkannt und in printer.cfg eingebunden.',
 			legacy: 'Legacy-Konfiguration erkannt',
@@ -207,17 +209,38 @@ window.I18nTranslations.de = {
 			uninstall_success_title: 'Deinstallation abgeschlossen',
 			uninstall_success_desc:
 				'Advanced Filament Swap deinstalliert. Neustart durchgeführt. Seite aktualisieren, um Änderungen anzuwenden.',
-			applyingUninstallTitle: 'Applying Uninstall',
-			applyingUninstallDesc: 'Removing include, restoring runout, and restarting firmware...',
-			timelineApply: 'Apply',
-			timelineConfirm: 'Confirm',
-			timelineComplete: 'Complete',
+			applyingUninstallTitle: 'Deinstallation wird angewendet',
+			applyingUninstallDesc:
+				'Include entfernen, Runout wiederherstellen und Firmware neu starten...',
+			timelineApply: 'Anwenden',
+			timelineConfirm: 'Bestätigen',
+			timelineComplete: 'Fertig',
 			afs_title: 'Advanced Filament Swap',
 			include_title: 'printer.cfg Include',
 			runout_title: 'Runout Sensor',
 			macros_title: 'Macros',
 			invalid_config: 'Invalid Config',
 			ok: 'OK',
+			critical_confirm_title: 'Sicherheitseinstellungen prüfen',
+			safety_review_label: 'Sicherheitsprüfung',
+			critical_confirm_desc:
+				'Vor der Installation bitte Bewegungs- und Temperatureinstellungen prüfen. Diese bestimmen, wo der Drucker parkt und wie er heizt; falsche Werte können Hardware beschädigen.',
+			summary: {
+				park_x_label: 'Park-X-Position',
+				park_y_label: 'Park-Y-Position',
+				park_z_label: 'Z-Hub-Distanz',
+				zmin_label: 'Minimale Z zum Parken',
+				default_temp_label: 'Standard-Hotend-Temperatur',
+				max_travel_desc: 'Maximale Druckerfahrt (2 mm Sicherheitsabstand)',
+				outside_area_desc: 'Außerhalb des Druckbereichs (0–{max} mm)',
+				negative_value_desc: 'Negativer Wert',
+				lift_desc: 'Druckkopf wird zu Beginn des Wechsels um diesen Betrag angehoben',
+				out_of_axis_desc: 'Außerhalb der Achsenspan­ne (0–{max} mm)',
+				zmin_desc:
+					'Ist der Kopf näher als dieser Wert am Bett, wird vor dem Parken mindestens auf diese Höhe angehoben',
+				default_temp_desc:
+					'Wird verwendet, wenn das Hotend zu Beginn des Wechsels nicht bereits aufgeheizt ist',
+			},
 			max: 'Max',
 			tip_install:
 				'Empfohlene Korrekturen anwenden und AFS installieren/reparieren; aktualisiert die Übersicht.',
@@ -551,6 +574,10 @@ window.I18nTranslations.de = {
 			fetch_fail: 'Konnte Sponsoren nicht laden. Bitte versuche es später erneut.',
 			loading: 'Loading...',
 			unknown: 'Unknown',
+			disclaimer:
+				'Haftungsausschluss: Dieses Werkzeug enthält Sicherheitsmechanismen und erstellt nach Möglichkeit Backups. Dennoch bergen Änderungen an der Druckerkonfiguration Risiken. Du trägst die volle Verantwortung für alle vorgenommenen Änderungen und deren Folgen. Diese Software wird „wie sie ist“ ohne jegliche Gewährleistung bereitgestellt.',
+			uninstall_info:
+				'Für eine sichere Deinstallation: Nutze zuerst den Button „Deinstallieren“ im Tab Status & Installation. Dies setzt die Konfigurationsänderungen zurück und entfernt die Include-Zeile. Danach kannst du die Browser-Erweiterung deinstallieren.',
 		},
 	},
 };

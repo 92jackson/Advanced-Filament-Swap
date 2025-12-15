@@ -1,6 +1,6 @@
 # Advanced Filament Swap for Moonraker Printers (AFS)
 
-[![Version](https://img.shields.io/badge/version-0.2.1-blue)](#) [![Manifest V3](https://img.shields.io/badge/Manifest-V3-orange)](#) [![Browsers](https://img.shields.io/badge/browsers-Chrome%20%7C%20Firefox%20%7C%20Edge-brightgreen)](#) [![Data Collection](https://img.shields.io/badge/data%20collection-none-success)](#) [![i18n](https://img.shields.io/badge/i18n-EN%20%7C%20ES%20%7C%20DE%20%7C%20FR%20%7C%20ZH-blueviolet)](#)
+[![Version](https://img.shields.io/badge/version-0.3.0-blue)](#) [![Manifest V3](https://img.shields.io/badge/Manifest-V3-orange)](#) [![Browsers](https://img.shields.io/badge/browsers-Chrome%20%7C%20Firefox%20%7C%20Edge-brightgreen)](#) [![Data Collection](https://img.shields.io/badge/data%20collection-none-success)](#) [![i18n](https://img.shields.io/badge/i18n-EN%20%7C%20ES%20%7C%20DE%20%7C%20FR%20%7C%20ZH-blueviolet)](#)
 
 ![AFS Logo](assets/logo.png)
 

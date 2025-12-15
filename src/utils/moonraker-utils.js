@@ -7,6 +7,34 @@ class MoonrakerClient {
 		this.ws = null;
 		this.wsOpen = false;
 		this.wsSubscribed = false;
+		this.testing = new URLSearchParams(location.search).get('spoof-moonraker') === 'true';
+		if (this.testing) {
+			console.log('[AFS] Testing mode enabled');
+
+			this._mockFS = new Map();
+			this._mockFS.set(
+				'printer.cfg',
+				[
+					'# Mock printer.cfg for testing mode',
+					'[pause_resume]',
+					'',
+					'[respond]',
+					'',
+					'[save_variables]',
+					'filename: /tmp/vars.cfg',
+					'',
+					'[filament_switch_sensor runout]',
+					'switch_pin: PA0',
+					'runout_gcode: M600',
+					'',
+					'[gcode_macro TEST]',
+					'gcode:',
+					'\tM117 Testing',
+					'',
+				].join('\n')
+			);
+			this._mockFS.set('adv_filament_swap.cfg', '');
+		}
 
 		// Heartbeat configuration
 		this.pingInterval = null;
@@ -20,6 +48,8 @@ class MoonrakerClient {
 	 * @returns {Promise<boolean>} Resolves `true` if `/server/info` responds OK.
 	 */
 	isMoonraker() {
+		if (this.testing) return Promise.resolve(true);
+
 		return fetch(this.base.replace(/\/$/, '') + '/server/info')
 			.then((r) => (r.ok ? r.json() : null))
 			.then((j) => j && j.result && typeof j.result.api_version !== 'undefined')
@@ -41,6 +71,9 @@ class MoonrakerClient {
 	 * @returns {Promise<void>}
 	 */
 	sendGcode(gcode) {
+		if (this.testing) {
+			return Promise.resolve();
+		}
 		const url = this.base.replace(/\/$/, '') + '/printer/gcode/script';
 		// Use POST with query param as per Moonraker API
 		return fetch(`${url}?script=${encodeURIComponent(gcode)}`, { method: 'POST' }).catch(
@@ -55,6 +88,9 @@ class MoonrakerClient {
 	 * @returns {Promise<void>}
 	 */
 	restartFirmware() {
+		if (this.testing) {
+			return Promise.resolve();
+		}
 		const url = this.base.replace(/\/$/, '') + '/printer/firmware_restart';
 		return fetch(url, { method: 'POST' }).then((r) => {
 			if (!r.ok) throw new Error('Restart failed: ' + r.status);
@@ -62,6 +98,9 @@ class MoonrakerClient {
 	}
 
 	isPrintActive() {
+		if (this.testing) {
+			return Promise.resolve(false);
+		}
 		const url = this.base.replace(/\/$/, '') + '/printer/objects/query?print_stats';
 		return fetch(url)
 			.then((r) => (r.ok ? r.json() : null))
@@ -80,6 +119,13 @@ class MoonrakerClient {
 	 * @returns {void}
 	 */
 	startAFSWebSocket() {
+		if (this.testing) {
+			this.wsOpen = false;
+			try {
+				window.dispatchEvent(new CustomEvent('afs-ws-status', { detail: { open: false } }));
+			} catch {}
+			return;
+		}
 		const url = this.getWebSocketURL();
 
 		this.ws = new WebSocket(url);
@@ -140,6 +186,7 @@ class MoonrakerClient {
 	 * Sends a ping (server.info) and waits for response.
 	 */
 	sendPing() {
+		if (this.testing) return;
 		if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
 
 		// Set timeout to kill connection if no pong
@@ -270,6 +317,9 @@ class MoonrakerClient {
 	 * @returns {Promise<string>} The contents of `printer.cfg` as text.
 	 */
 	readPrinterConfigRaw() {
+		if (this.testing) {
+			return Promise.resolve(this._mockFS.get('printer.cfg') || '');
+		}
 		const url = this.base.replace(/\/$/, '') + '/server/files/config/printer.cfg';
 		return this.fetchText(url);
 	}
@@ -280,6 +330,9 @@ class MoonrakerClient {
 	 * @returns {Promise<string>} File contents as text.
 	 */
 	readConfigFile(path) {
+		if (this.testing) {
+			return Promise.resolve(this._mockFS.get(path) || '');
+		}
 		const url = this.base.replace(/\/$/, '') + '/server/files/config/' + path;
 		return this.fetchText(url);
 	}
@@ -289,6 +342,9 @@ class MoonrakerClient {
 	 * @returns {Promise<{x: number, y: number, z: number}>} Axis maximums or defaults if query fails.
 	 */
 	getAxisMaximums() {
+		if (this.testing) {
+			return Promise.resolve({ x: 220, y: 220, z: 250 });
+		}
 		const url = this.base.replace(/\/$/, '') + '/printer/objects/query?toolhead';
 		return fetch(url)
 			.then((r) => (r.ok ? r.json() : null))
@@ -297,18 +353,22 @@ class MoonrakerClient {
 					const th = j.result.status.toolhead;
 					if (th.axis_maximum) {
 						return {
-							x: th.axis_maximum[0] - 2,
-							y: th.axis_maximum[1] - 2,
-							z: th.axis_maximum[2] - 2,
+							x: th.axis_maximum[0],
+							y: th.axis_maximum[1],
+							z: th.axis_maximum[2],
 						};
 					}
 				}
-				return { x: 200, y: 200, z: 200 }; // Fallback
+				return { x: 100, y: 100, z: 100 }; // Fallback
 			})
-			.catch(() => ({ x: 200, y: 200, z: 200 }));
+			.catch(() => ({ x: 100, y: 100, z: 100 }));
 	}
 
 	deleteConfigFile(path) {
+		if (this.testing) {
+			this._mockFS.delete(path);
+			return Promise.resolve(true);
+		}
 		const urlDel = this.base.replace(/\/$/, '') + '/server/files/config/' + path;
 		return fetch(urlDel, { method: 'DELETE' })
 			.then((r) => {
@@ -411,6 +471,19 @@ class MoonrakerClient {
 	 * @returns {Promise<string[]>} List of macro names.
 	 */
 	getGcodeMacros() {
+		if (this.testing) {
+			const names = new Set();
+			for (const [path, text] of this._mockFS.entries()) {
+				if (!text) continue;
+				const re = /^\s*\[gcode_macro\s+([^\]]+)\]/gm;
+				let m;
+				while ((m = re.exec(text)) !== null) {
+					const nm = String(m[1] || '').trim();
+					if (nm) names.add(nm);
+				}
+			}
+			return Promise.resolve(Array.from(names));
+		}
 		const url = this.base.replace(/\/$/, '') + '/printer/objects/list';
 		return fetch(url)
 			.then((r) => (r.ok ? r.json() : null))
@@ -1018,6 +1091,24 @@ class MoonrakerClient {
 				const hasDict = /variable_defaults\s*:\s*\{/m.test(snapshot.advConfigText);
 				const hasLegacy = /^\s*variable_default_temp\s*:\s*/m.test(snapshot.advConfigText);
 				snapshot.isLegacyConfig = !!snapshot.advConfigText && !hasDict && hasLegacy;
+				if (this.testing) {
+					const q = new URLSearchParams(location.search);
+					if (q.get('afs_installed') === 'true') {
+						snapshot.advConfigExists = true;
+						if (!snapshot.advConfigText) snapshot.advConfigText = '; testing mode';
+						snapshot.isLegacyConfig = false;
+					}
+					if (q.get('afs_include') === 'true') {
+						snapshot.hasAFSInclude = true;
+					}
+					if (q.get('afs_runout_fixed') === 'true') {
+						const conflicts = Array.isArray(snapshot.conflicts)
+							? snapshot.conflicts
+							: [];
+						snapshot.conflicts = conflicts.filter((c) => !c.isRunoutSensor);
+						snapshot.runoutBackups = [];
+					}
+				}
 				return snapshot;
 			});
 	}
@@ -1367,6 +1458,10 @@ class MoonrakerClient {
 	 * @returns {Promise<boolean>} `true` if an include line for AFS is present.
 	 */
 	isAFSIncluded() {
+		if (this.testing) {
+			const q = new URLSearchParams(location.search);
+			if (q.get('afs_include') === 'true') return Promise.resolve(true);
+		}
 		return this.readPrinterConfigRaw().then((text) => {
 			const re = /^\s*\[include\s+[^\]]*adv_filament_swap\.cfg\]/m;
 			return re.test(text);
@@ -1381,6 +1476,10 @@ class MoonrakerClient {
 	 * @returns {Promise<boolean>} Resolves `true` on success.
 	 */
 	saveFile(filename, text, root = 'config') {
+		if (this.testing) {
+			this._mockFS.set(filename, text);
+			return Promise.resolve(true);
+		}
 		const urlUpload = this.base.replace(/\/$/, '') + '/server/files/upload';
 		const fd = new FormData();
 		const blob = new Blob([text], { type: 'text/plain' });
@@ -1401,6 +1500,10 @@ class MoonrakerClient {
 	 * @returns {Promise<boolean>} Resolves `true` on success.
 	 */
 	savePrinterConfig(text) {
+		if (this.testing) {
+			this._mockFS.set('printer.cfg', text);
+			return Promise.resolve(true);
+		}
 		const urlUpload = this.base.replace(/\/$/, '') + '/server/files/upload';
 		const doBackup = () => this.backupPrinterConfig().catch(() => false);
 
@@ -1424,6 +1527,13 @@ class MoonrakerClient {
 	 * @returns {Promise<boolean>} Resolves `true` on success.
 	 */
 	backupPrinterConfig() {
+		if (this.testing) {
+			const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+			const name = 'printer.cfg.afs-' + stamp + '.bak';
+			const text = this._mockFS.get('printer.cfg') || '';
+			this._mockFS.set(name, text);
+			return Promise.resolve(true);
+		}
 		return this.readPrinterConfigRaw().then((text) => {
 			const urlUpload = this.base.replace(/\/$/, '') + '/server/files/upload';
 			const stamp = new Date().toISOString().replace(/[:.]/g, '-');
