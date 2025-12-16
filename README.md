@@ -39,10 +39,11 @@ This extension is designed to work with standard Moonraker installations.
 
 ## 🚀 Installation
 
-## From Chrome/FireFox/Edge Web Store
+## From Chrome/Firefox/Edge Web Store
 
 -   **Coming Soon!**
 
+Edge: [Microsoft Add-ons](https://microsoftedge.microsoft.com/addons/detail/advanced-filament-swap-fo/ebkffpogeleaclpjmmijnajifniamdfh)
 Firefox: [Mozilla Add-ons](https://addons.mozilla.org/en-GB/firefox/addon/advanced-filament-swap/)
 
 ## From Source
