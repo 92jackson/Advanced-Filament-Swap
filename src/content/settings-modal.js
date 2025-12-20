@@ -3042,22 +3042,28 @@ class SettingsModal {
 		grid.className = 'afs-about-grid';
 
 		// Helper to create cards
-		const createCard = (title, sub, iconPath, url, isPrimary = false, isDiscord = false) => {
+		const createCard = (title, sub, iconPath, url, className = '') => {
 			const card = document.createElement('a');
-			card.className = `afs-action-card ${isPrimary ? 'primary' : ''} ${
-				isDiscord ? 'discord' : ''
-			}`;
+			card.className = `afs-action-card ${className}`;
 			card.href = url;
 			card.target = '_blank';
 
-			const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-			svg.setAttribute('class', 'afs-card-icon');
-			svg.setAttribute('viewBox', '0 0 24 24');
-			svg.setAttribute('fill', 'currentColor');
-			const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-			path.setAttribute('d', iconPath);
-			svg.appendChild(path);
-			card.appendChild(svg);
+			if (iconPath.startsWith('http')) {
+				const img = document.createElement('img');
+				img.className = 'afs-card-icon afs-card-img';
+				img.src = iconPath;
+				img.alt = title;
+				card.appendChild(img);
+			} else {
+				const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+				svg.setAttribute('class', 'afs-card-icon');
+				svg.setAttribute('viewBox', '0 0 24 24');
+				svg.setAttribute('fill', 'currentColor');
+				const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+				path.setAttribute('d', iconPath);
+				svg.appendChild(path);
+				card.appendChild(svg);
+			}
 
 			const t = document.createElement('div');
 			t.className = 'afs-card-title';
@@ -3091,9 +3097,8 @@ class SettingsModal {
 			createCard(
 				'Jackson92',
 				window.I18n.t('settings.about.developed_by'),
-				iconUser,
-				'https://github.com/92jackson',
-				false
+				'https://cdn.buymeacoffee.com/uploads/profile_pictures/2025/12/4cuA2QpZl7S3mK5V.jpg',
+				'https://github.com/92jackson'
 			)
 		);
 
@@ -3104,8 +3109,7 @@ class SettingsModal {
 				'Join the Community',
 				iconDiscord,
 				'https://discord.gg/e3eXGTJbjx',
-				false,
-				true
+				'discord'
 			)
 		);
 
@@ -3115,7 +3119,8 @@ class SettingsModal {
 				window.I18n.t('settings.about.github'),
 				'View Source Code',
 				iconGithub,
-				'https://github.com/92jackson/Advanced-Filament-Swap'
+				'https://github.com/92jackson/Advanced-Filament-Swap',
+				'github'
 			)
 		);
 
@@ -3126,7 +3131,7 @@ class SettingsModal {
 				'Buy Me a Coffee',
 				iconCoffee,
 				'https://buymeacoffee.com/92jackson',
-				true
+				'donate'
 			)
 		);
 

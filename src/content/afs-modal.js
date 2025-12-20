@@ -158,8 +158,8 @@ class FilamentSwapModal {
 		titleGroup.appendChild(this.elements.title);
 		titleGroup.appendChild(this.elements.timeline);
 
-		header.appendChild(titleGroup);
 		header.appendChild(controls);
+		header.appendChild(titleGroup);
 		this.elements.modal.appendChild(header);
 
 		// Body

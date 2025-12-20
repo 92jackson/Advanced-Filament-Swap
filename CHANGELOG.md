@@ -2,6 +2,11 @@
 
 All notable changes to the extension (including the bundled cfg) are documented here. Version numbers follow the extension manifest.
 
+## v0.3.1 - 2025-12-20
+
+-   Minor improvements of layout and styling of modals for small screens.
+-   Minor improvement to modal minimize/restore animations.
+
 ## v0.3.0 — 2025-12-14
 
 ### Added

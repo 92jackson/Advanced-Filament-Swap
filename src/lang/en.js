@@ -88,7 +88,7 @@ window.I18nTranslations.en = {
 			filament_swap_loading: {
 				title: 'Load New Filament',
 				label: 'Load',
-				desc: 'Insert new filament until it reaches the hotend. Use the Advance control to bleed or purge preset lengths.',
+				desc: 'Insert new filament until it reaches the hotend, then use the Load Filament control to purge preset lengths.',
 			},
 			manual_swap_prepare: {
 				title: 'Maintenance Position',
@@ -98,7 +98,7 @@ window.I18nTranslations.en = {
 			load_new_loaded: {
 				title: 'Filament Loaded',
 				label: 'Loaded',
-				desc: "Filament loaded! Use the Advance control to purge preset lengths until color is clean, or 'Finish' to resume.",
+				desc: "Filament loaded! Use the Load Filament control to purge preset lengths until color is clean, or 'Finish' to resume.",
 			},
 			complete: {
 				title: 'Swap Complete',

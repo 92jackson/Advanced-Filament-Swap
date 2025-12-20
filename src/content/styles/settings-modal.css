@@ -1343,6 +1343,7 @@ code.inline {
 .afs-about-hero {
 	display: flex;
 	align-items: center;
+	flex-wrap: wrap;
 	gap: 24px;
 	background: rgba(32, 34, 37, 0.5);
 	padding: 24px;
@@ -1434,10 +1435,6 @@ code.inline {
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.afs-action-card.primary:hover {
-	border-color: #5865f2;
-}
-
 .afs-card-icon {
 	width: 32px;
 	height: 32px;
@@ -1445,16 +1442,37 @@ code.inline {
 	transition: color 0.2s;
 }
 
+.afs-card-icon.afs-card-img {
+	border-radius: 50%;
+	object-fit: cover;
+}
+
 .afs-action-card:hover .afs-card-icon {
 	color: #fff;
+}
+
+.afs-action-card.discord:hover {
+	border-color: #5865f2;
 }
 
 .afs-action-card.discord:hover .afs-card-icon {
 	color: #5865f2;
 }
 
+.afs-action-card.github:hover {
+	border-color: #000000;
+}
+
 .afs-action-card.github:hover .afs-card-icon {
 	color: #000000;
+}
+
+.afs-action-card.donate:hover {
+	border-color: #ffdd00;
+}
+
+.afs-action-card.donate:hover .afs-card-icon {
+	color: #ffdd00;
 }
 
 .afs-card-title {
