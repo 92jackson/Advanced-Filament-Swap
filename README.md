@@ -126,9 +126,9 @@ Need help? Found a bug? Want to request a feature?
 
 **Beeper / Sound**
 - `M300` — Plays a tone via beeper_pin at a given frequency and duration. Silences AFS_NOISE automatically if no beeper pin is configured.
-- `AFS_NOISE` — Plays named sound sequences (FILAMENT_SWAP, RUN_OUT, BEEP, ALERT, CHIME, or the easter-egg CAKE melody) using repeated M300 calls.
+- `AFS_NOISE` — Plays named sound sequences (FILAMENT_SWAP, RUN_OUT, BEEP, ALERT, CHIME) using repeated M300 calls.
 - `AFS_SILENT` — Mutes AFS_NOISE sounds. Pass RESET to re-enable them.
-- `AFS_IGNORE_M600` — Suppresses M600 commands (useful to prevent accidental triggers). Pass RESET to start listening again.
+- `AFS_IGNORE_M600` — Suppresses M600 commands (useful to prevent accidental triggers left in gcode). Pass RESET to start listening again.
 
 **Optional User Hooks** (define in printer.cfg to use)
 - `AFS_PRE_SWAP` — Custom macro that runs just before the print is paused.
