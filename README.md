@@ -41,7 +41,7 @@ This extension is designed to work with standard Moonraker installations.
 
 ## From Chrome/Firefox/Edge Web Store
 
--   **Chrome Coming Soon!**
+-   Chrome: [Chrome Extensions](https://chromewebstore.google.com/detail/advanced-filament-swap-fo/nmfldhlnfmmcmlfoblpkcdnfccdlcnkm)
 
 -   Edge (Desktop) + Edge Canary (Android): [Microsoft Add-ons](https://microsoftedge.microsoft.com/addons/detail/advanced-filament-swap-fo/ebkffpogeleaclpjmmijnajifniamdfh)
 
