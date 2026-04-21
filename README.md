@@ -84,3 +84,52 @@ Need help? Found a bug? Want to request a feature?
     <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" width="180" />
   </a>
 </div>
+
+---
+
+### List of Macros imported to your printer:
+<i>Most of these macros can be safely hidden in Mainsail / Fluidd, the only ones you may want to keep for initiating manual swaps are the User-Facing Swap Macros.</i>
+
+**Core Configuration**
+- `AFS_CFG` — Central configuration hub and state machine. Holds all default settings (temperatures, speeds, park positions, etc.) and dispatches behavior for NEWJOB modes: RUN_OUT, SWAP_PRINT, SWAP_MANUAL, LOAD, and COMPLETE.
+
+**User-Facing Swap Macros**
+- `M600` — Standard slicer filament-change command. Triggers an automatic print-swap flow (SWAP_PRINT) and plays the configured sound.
+- `RUN_OUT` — Called by a filament runout sensor. Pauses the print, plays an alert, and prompts the user to swap filament.
+- `FILAMENT_SWAP` — Manual filament change trigger. Parks the toolhead and guides the user through a swap without a slicer command.
+- `LOAD_FILAMENT` — Advances new filament through the hotend (150mm default) or purges a custom length if PURGE=<mm> is passed.
+- `FINISH_SWAP` — Called by the user when the swap is complete. Cancels the cooldown timer and resumes the print.
+
+**Low-Level Operation Macros**
+- `AFS_LOAD` — Performs the actual filament load/purge move at configured speed, then retracts slightly to prevent ooze.
+- `AFS_UNLOAD` — Performs the filament unload move (pushes 15mm first to prevent a bulbous tip, then retracts the full bowden length).
+- `AFS_TEMP_CHECK` — Validates and enforces a safe hotend temperature before extrusion. Heats to target (blocking M109) or adjusts non-blocking (M104) if already close.
+- `AFS_SET_TARGET` — UI-callable macro to override the swap temperature and immediately heat to it.
+
+**Pause / Resume / Park**
+- `PAUSE` — Overrides Klipper's built-in pause. Saves state, retracts filament (unless bypassed), and calls M125 to park the head.
+- `RESUME` — Overrides Klipper's built-in resume. Cancels the cooldown timer, restores state, and clears swap/pause flags.
+- `M125` — Parks the toolhead at the configured maintenance position, homing first if needed and calculating a safe Z lift.
+
+**State & Messaging**
+- `AFS_STATE` — WebSocket-facing state store. Holds processid, push counter, origin, status, eta, and ts for the frontend UI to poll.
+- `AFS_PUSH` — Publishes state updates to AFS_STATE and optionally echoes messages to the Klipper console, depending on config flags.
+
+**Helper / Utility Macros**
+- `AFS_STORE_TEMPERATURE` — Saves the current extruder target temperature into AFS_CFG so it can be restored after the swap.
+- `AFS_RESTORE_IDLE_TIMEOUT` — Restores the printer's idle timeout to its pre-swap value (or config default).
+- `AFS_INCREMENT_ALERT_COUNT` — Increments a persistent alert counter (saved to variables.cfg) and updates the AFS_STATE process ID.
+
+**Cooldown**
+- `AFS_COOLDOWN_TIMER` (delayed_gcode) — A delayed trigger that fires after the configured cooldown_delay seconds to check if the hotend should be cooled.
+- `AFS_COOLDOWN_IF_IDLE` — Called by the timer. Turns off the hotend heater if the printer is still in a swap state, optionally unpriming the nozzle first (runout scenario).
+
+**Beeper / Sound**
+- `M300` — Plays a tone via beeper_pin at a given frequency and duration. Silences AFS_NOISE automatically if no beeper pin is configured.
+- `AFS_NOISE` — Plays named sound sequences (FILAMENT_SWAP, RUN_OUT, BEEP, ALERT, CHIME, or the easter-egg CAKE melody) using repeated M300 calls.
+- `AFS_SILENT` — Mutes AFS_NOISE sounds. Pass RESET to re-enable them.
+- `AFS_IGNORE_M600` — Suppresses M600 commands (useful to prevent accidental triggers). Pass RESET to start listening again.
+
+**Optional User Hooks** (define in printer.cfg to use)
+- `AFS_PRE_SWAP` — Custom macro that runs just before the print is paused.
+- `AFS_POST_SWAP` — Custom macro that runs just before the print resumes.
